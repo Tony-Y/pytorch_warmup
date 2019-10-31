@@ -1,0 +1,5 @@
+include test/__init__.py
+include examples/plots/*.py
+include examples/plots/figs/*.png
+include examples/emnist/*.py
+include examples/emnist/figs/*.png
