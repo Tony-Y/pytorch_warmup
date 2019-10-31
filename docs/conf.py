@@ -25,7 +25,7 @@ copyright = '2019, Takenori Yamamoto'
 author = 'Takenori Yamamoto'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.2'
+release = '0.0.3'
 
 
 # -- General configuration ---------------------------------------------------
