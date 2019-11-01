@@ -1,3 +1,4 @@
+import argparse
 import matplotlib.pyplot as plt
 from pytorch_warmup import *
 import numpy as np
@@ -40,6 +41,12 @@ def radam_period(beta2):
     return [radam_period_fn(x) for x in beta2]
 
 
+parser = argparse.ArgumentParser(description='Effective warmup period')
+parser.add_argument('--output', type=str, default='none',
+                    choices=['none', 'png', 'pdf'],
+                    help='Output file type (default: none)')
+args = parser.parse_args()
+
 beta2 = np.arange(0.99, 0.9999, 0.0001)
 plt.plot(beta2, untuned_exponential_period(beta2), label='Untuned Exponential')
 plt.plot(beta2, untuned_linear_period(beta2), linestyle=':', label='Untuned Linear')
@@ -51,4 +58,7 @@ plt.legend()
 plt.title('Effective Warmup Period')
 plt.xlabel(r'$\beta_{2}$')
 plt.ylabel(r'${\cal T}(\omega)$')
-plt.show()
+if args.output == 'none':
+    plt.show()
+else:
+    plt.savefig(f'warmup_period.{args.output}')
