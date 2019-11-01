@@ -26,14 +26,15 @@ jobs:
     - name: Install package
       run: python setup.py install
     - name: Preparation
-      run: |
-        mkdir artifact
-        cd artifact
+      run: mkdir artifact
     - name: Plot warmup period
-      run: python ../examples/plots/effective_warmup_period.py --output png
+      run: |
+        cd artifact
+        python ../examples/plots/effective_warmup_period.py --output png
     - name: Plot warmup schedule
-      run: python ../examples/plots/warmup_schedule.py --output png
-    - run: cd .. 
+      run: |
+        cd artifact
+        python ../examples/plots/warmup_schedule.py --output png 
     - uses: actions/upload-artifact@master
       with:
         name: artifact_${{ matrix.os }}_${{ matrix.python-version }}
