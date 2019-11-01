@@ -19,7 +19,7 @@ def get_rates(warmup_cls, beta2, max_step):
     return rates
 
 
-parser = argparse.ArgumentParser(description='Effective warmup period')
+parser = argparse.ArgumentParser(description='Warmup schedule')
 parser.add_argument('--output', type=str, default='none',
                     choices=['none', 'png', 'pdf'],
                     help='Output file type (default: none)')
