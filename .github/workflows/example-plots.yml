@@ -25,7 +25,17 @@ jobs:
         pip install matplotlib
     - name: Install package
       run: python setup.py install
+    - name: Preparation
+      run: |
+        mkdir artifact
+        cd artifact
     - name: Plot warmup period
-      run: python examples/plots/effective_warmup_period.py --output png
+      run: python ../examples/plots/effective_warmup_period.py --output png
     - name: Plot warmup schedule
-      run: python examples/plots/warmup_schedule.py --output png
+      run: python ../examples/plots/warmup_schedule.py --output png
+    - run: cd .. 
+    - uses: actions/upload-artifact@master
+      with:
+        name: artifact_${{ matrix.os }}_${{ matrix.python-version }}
+        path: artifact 
+      
