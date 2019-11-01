@@ -108,17 +108,17 @@ def main():
     kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
     train_loader = torch.utils.data.DataLoader(
         datasets.EMNIST('.data', 'balanced', train=True, download=True,
-                       transform=transforms.Compose([
-                           transforms.ToTensor(),
-                           transforms.Normalize((0.1751,), (0.3332,))
-                       ])),
+                        transform=transforms.Compose([
+                            transforms.ToTensor(),
+                            transforms.Normalize((0.1751,), (0.3332,))
+                        ])),
         batch_size=args.batch_size, shuffle=True, drop_last=True, **kwargs)
     test_loader = torch.utils.data.DataLoader(
         datasets.EMNIST('.data', 'balanced', train=False,
-                       transform=transforms.Compose([
-                           transforms.ToTensor(),
-                           transforms.Normalize((0.1751,), (0.3332,))
-                       ])),
+                        transform=transforms.Compose([
+                            transforms.ToTensor(),
+                            transforms.Normalize((0.1751,), (0.3332,))
+                        ])),
         batch_size=args.test_batch_size, shuffle=False, **kwargs)
 
     output_dir = args.warmup
@@ -136,8 +136,8 @@ def main():
                             betas=(0.9, args.beta2),
                             weight_decay=args.wd)
     num_steps = len(train_loader) * args.epochs
-    lr_scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer,
-                        T_max=num_steps, eta_min=args.lr_min)
+    lr_scheduler = optim.lr_scheduler.CosineAnnealingLR(
+        optimizer, T_max=num_steps, eta_min=args.lr_min)
     if args.warmup == 'linear':
         warmup_scheduler = warmup.UntunedLinearWarmup(optimizer)
     elif args.warmup == 'exponential':
