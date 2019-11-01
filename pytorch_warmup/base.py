@@ -51,7 +51,7 @@ def get_warmup_params(warmup_period, group_count):
         warmup_params = [dict(warmup_period=x) for x in warmup_period]
     elif type(warmup_period) == int:
         warmup_params = [dict(warmup_period=warmup_period)
-            for _ in range(group_count)]
+                         for _ in range(group_count)]
     else:
         raise TypeError('{} is not a list nor an int.'.format(
             type(warmup_period).__name__))

@@ -8,6 +8,7 @@ from torchvision import datasets, transforms
 import pytorch_warmup as warmup
 import os
 
+
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
@@ -25,6 +26,7 @@ class Net(nn.Module):
         x = F.relu(self.fc1(x))
         x = self.fc2(x)
         return F.log_softmax(x, dim=1)
+
 
 def train(args, model, device, train_loader, optimizer, lr_scheduler,
           warmup_scheduler, epoch, history):
@@ -47,6 +49,7 @@ def train(args, model, device, train_loader, optimizer, lr_scheduler,
                 100. * (batch_idx+1) / len(train_loader), loss, lr))
             history.write(f'{epoch},{step},{loss},{lr}\n')
 
+
 def test(args, model, device, test_loader, epoch, evaluation):
     model.eval()
     test_loss = 0
@@ -55,8 +58,8 @@ def test(args, model, device, test_loader, epoch, evaluation):
         for data, target in test_loader:
             data, target = data.to(device), target.to(device)
             output = model(data)
-            test_loss += F.nll_loss(output, target, reduction='sum').item() # sum up batch loss
-            pred = output.argmax(dim=1, keepdim=True) # get the index of the max log-probability
+            test_loss += F.nll_loss(output, target, reduction='sum').item()  # sum up batch loss
+            pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
             correct += pred.eq(target.view_as(pred)).sum().item()
 
     test_loss /= len(test_loader.dataset)
@@ -65,6 +68,7 @@ def test(args, model, device, test_loader, epoch, evaluation):
         test_loss, correct, len(test_loader.dataset), test_acc))
     evaluation.write(f'{epoch},{test_loss},{test_acc}\n')
     evaluation.flush()
+
 
 def main():
     # Training settings
@@ -120,10 +124,10 @@ def main():
     output_dir = args.warmup
     os.makedirs(output_dir, exist_ok=True)
 
-    history = open(os.path.join(output_dir,'history.csv'), 'w')
+    history = open(os.path.join(output_dir, 'history.csv'), 'w')
     history.write('epoch,step,loss,lr\n')
 
-    evaluation = open(os.path.join(output_dir,'evaluation.csv'), 'w')
+    evaluation = open(os.path.join(output_dir, 'evaluation.csv'), 'w')
     evaluation.write('epoch,loss,accuracy\n')
 
     model = Net().to(device)
@@ -149,9 +153,11 @@ def main():
         test(args, model, device, test_loader, epoch, evaluation)
 
     if (args.save_model):
-        torch.save(model.state_dict(),os.path.join(output_dir,"emnist_cnn.pt"))
+        torch.save(model.state_dict(), os.path.join(output_dir, "emnist_cnn.pt"))
 
     history.close()
     evaluation.close()
+
+
 if __name__ == '__main__':
     main()

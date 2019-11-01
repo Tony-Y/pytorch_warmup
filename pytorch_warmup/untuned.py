@@ -1,4 +1,3 @@
-import math
 from .base import LinearWarmup, ExponentialWarmup
 
 

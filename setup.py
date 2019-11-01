@@ -14,7 +14,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/Tony-Y/pytorch_warmup",
-    packages = ['pytorch_warmup'],
+    packages=['pytorch_warmup'],
     classifiers=[
         "Intended Audience :: Science/Research",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
@@ -24,6 +24,6 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
     ],
     python_requires='>=3.6',
-    test_suite = 'test',
+    test_suite='test',
     install_requires=['torch>=1.1']
 )

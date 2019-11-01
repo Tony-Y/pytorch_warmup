@@ -1,7 +1,7 @@
 import unittest
-import math
 import torch
 import pytorch_warmup as warmup
+
 
 class TestRAdam(unittest.TestCase):
 
@@ -17,7 +17,7 @@ class TestRAdam(unittest.TestCase):
             ], lr=0.5, betas=(0.9, 0.7))
         lr_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda=lambda step: 1.0)
         warmup_scheduler = warmup.RAdamWarmup(optimizer)
-        for step in range(1,11):
+        for step in range(1, 11):
             lr = [x['lr'] for x in optimizer.param_groups]
             print(f'{step} {lr}')
             self.assertLess(lr[0], 0.5)
