@@ -4,6 +4,11 @@ This library contains PyTorch implementations of the warmup schedules described 
 
 <p align="center"><img src="examples/plots/figs/warmup_schedule.png" alt="Warmup schedule" width="400"/></p>
 
+![Python package](https://github.com/Tony-Y/pytorch_warmup/workflows/Python%20package/badge.svg)
+[![PyPI version shields.io](https://img.shields.io/pypi/v/pytorch-warmup.svg)](https://pypi.python.org/pypi/pytorch-warmup/)
+[![PyPI license](https://img.shields.io/pypi/l/pytorch-warmup.svg)](https://pypi.python.org/pypi/pytorch-warmup/)
+[![PyPI pyversions](https://img.shields.io/pypi/pyversions/pytorch-warmup.svg)](https://pypi.python.org/pypi/pytorch-warmup/)
+
 ## Installation
 
 Make sure you have Python 3.6+ and PyTorch 1.1 or newer. Then, run the following command:
