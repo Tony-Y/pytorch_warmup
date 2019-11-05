@@ -26,6 +26,7 @@ The scheduled learning rate is dampened by the multiplication of the warmup fact
 <p align="center"><img src="examples/emnist/figs/learning_rate.png" alt="Learning rate" width="400"/></p>
 
 #### Approach 1
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Tony-Y/colab-notebooks/blob/master/PyTorch_Warmup_Approach1.ipynb)
 
 When the learning rate schedule uses the global iteration number, the untuned linear warmup can be used as follows:
 
@@ -48,6 +49,7 @@ for epoch in range(1,num_epochs+1):
 ```
 
 #### Approach 2
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Tony-Y/colab-notebooks/blob/master/PyTorch_Warmup_Approach2.ipynb)
 
 When the learning rate schedule uses the epoch number, the warmup schedule can be used as follows (for PyTorch 1.2 or above):
 
