@@ -10,7 +10,7 @@ jobs:
       max-parallel: 8
       matrix:
         python-version: [3.6, 3.7]
-        os: [macOS-10.14, windows-latest, ubuntu-16.04, ubuntu-18.04]
+        os: [macos-latest, windows-latest, ubuntu-16.04, ubuntu-18.04]
 
     steps:
     - uses: actions/checkout@v1
@@ -34,9 +34,8 @@ jobs:
     - name: Plot warmup schedule
       run: |
         cd artifact
-        python ../examples/plots/warmup_schedule.py --output png 
+        python ../examples/plots/warmup_schedule.py --output png
     - uses: actions/upload-artifact@master
       with:
         name: artifact_${{ matrix.os }}_${{ matrix.python-version }}
-        path: artifact 
-      
+        path: artifact
