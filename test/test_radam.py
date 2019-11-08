@@ -2,6 +2,8 @@ import unittest
 import torch
 import pytorch_warmup as warmup
 
+from .test_base import _test_state_dict
+
 
 class TestRAdam(unittest.TestCase):
 
@@ -26,3 +28,6 @@ class TestRAdam(unittest.TestCase):
             optimizer.step()
             lr_scheduler.step()
             warmup_scheduler.dampen()
+
+        _test_state_dict(self, warmup_scheduler,
+                         lambda: warmup.RAdamWarmup(optimizer))

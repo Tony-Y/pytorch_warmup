@@ -4,6 +4,16 @@ import torch
 import pytorch_warmup as warmup
 
 
+def _test_state_dict(self, warmup_scheduler, constructor):
+    warmup_scheduler_copy = constructor()
+    warmup_scheduler_copy.load_state_dict(warmup_scheduler.state_dict())
+    for key in warmup_scheduler.__dict__.keys():
+        if key != 'optimizer':
+            print(key, warmup_scheduler.__dict__[key])
+            self.assertAlmostEqual(warmup_scheduler.__dict__[key],
+                                   warmup_scheduler_copy.__dict__[key])
+
+
 class TestBase(unittest.TestCase):
 
     def setUp(self):
@@ -32,6 +42,9 @@ class TestBase(unittest.TestCase):
             lr_scheduler.step()
             warmup_scheduler.dampen()
 
+        _test_state_dict(self, warmup_scheduler,
+                         lambda: warmup.LinearWarmup(optimizer, warmup_period=10))
+
     def test_exponetial(self):
         p1 = torch.nn.Parameter(torch.arange(10, dtype=torch.float32).to(self.device))
         p2 = torch.nn.Parameter(torch.arange(10, dtype=torch.float32).to(self.device))
@@ -50,3 +63,6 @@ class TestBase(unittest.TestCase):
             optimizer.step()
             lr_scheduler.step()
             warmup_scheduler.dampen()
+
+        _test_state_dict(self, warmup_scheduler,
+                         lambda: warmup.ExponentialWarmup(optimizer, warmup_period=10))

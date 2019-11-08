@@ -3,6 +3,8 @@ import math
 import torch
 import pytorch_warmup as warmup
 
+from .test_base import _test_state_dict
+
 
 class TestUntuned(unittest.TestCase):
 
@@ -32,6 +34,9 @@ class TestUntuned(unittest.TestCase):
             lr_scheduler.step()
             warmup_scheduler.dampen()
 
+        _test_state_dict(self, warmup_scheduler,
+                         lambda: warmup.UntunedLinearWarmup(optimizer))
+
     def test_untuned_exponetial(self):
         p1 = torch.nn.Parameter(torch.arange(10, dtype=torch.float32).to(self.device))
         p2 = torch.nn.Parameter(torch.arange(10, dtype=torch.float32).to(self.device))
@@ -50,3 +55,6 @@ class TestUntuned(unittest.TestCase):
             optimizer.step()
             lr_scheduler.step()
             warmup_scheduler.dampen()
+
+        _test_state_dict(self, warmup_scheduler,
+                         lambda: warmup.UntunedExponentialWarmup(optimizer))
