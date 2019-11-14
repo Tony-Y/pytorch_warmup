@@ -1,13 +1,11 @@
 import setuptools
 
 with open("README.md", "r") as fh:
-    long_description = ''
-    for _ in range(3):
-        long_description += fh.readline()
+    long_description = fh.read()
 
 setuptools.setup(
     name="pytorch-warmup",
-    version="0.0.3",
+    version="0.0.4",
     author="Takenori Yamamoto",
     author_email="yamamoto.takenory@gmail.com",
     description="A PyTorch Extension for Learning Rate Warmup",
@@ -19,7 +17,8 @@ setuptools.setup(
         "Intended Audience :: Science/Research",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
         "Topic :: Software Development :: Libraries :: Python Modules",
-        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
         "Operating System :: OS Independent",
         "License :: OSI Approved :: MIT License",
     ],

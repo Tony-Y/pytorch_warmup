@@ -2,7 +2,7 @@
 
 This library contains PyTorch implementations of the warmup schedules described in [On the adequacy of untuned warmup for adaptive optimization](https://arxiv.org/abs/1910.04209).
 
-<p align="center"><img src="examples/plots/figs/warmup_schedule.png" alt="Warmup schedule" width="400"/></p>
+<p align="center"><img src="https://github.com/Tony-Y/pytorch_warmup/raw/master/examples/plots/figs/warmup_schedule.png" alt="Warmup schedule" width="400"/></p>
 
 ![Python package](https://github.com/Tony-Y/pytorch_warmup/workflows/Python%20package/badge.svg)
 [![PyPI version shields.io](https://img.shields.io/pypi/v/pytorch-warmup.svg)](https://pypi.python.org/pypi/pytorch-warmup/)
@@ -11,10 +11,16 @@ This library contains PyTorch implementations of the warmup schedules described 
 
 ## Installation
 
-Make sure you have Python 3.6+ and PyTorch 1.1 or newer. Then, run the following command:
+Make sure you have Python 3.6+ and PyTorch 1.1+. Then, run the following command:
 
 ```
 python setup.py install
+```
+
+or
+
+```
+pip install -U pytorch_warmup
 ```
 
 ## Usage
@@ -23,7 +29,7 @@ python setup.py install
 
 The scheduled learning rate is dampened by the multiplication of the warmup factor:
 
-<p align="center"><img src="examples/emnist/figs/learning_rate.png" alt="Learning rate" width="400"/></p>
+<p align="center"><img src="https://github.com/Tony-Y/pytorch_warmup/raw/master/examples/emnist/figs/learning_rate.png" alt="Learning rate" width="400"/></p>
 
 #### Approach 1
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Tony-Y/colab-notebooks/blob/master/PyTorch_Warmup_Approach1.ipynb)
