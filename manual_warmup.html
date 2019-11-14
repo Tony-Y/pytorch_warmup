@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Manual Warmup &mdash; PyTorch Warmup 0.0.3 documentation</title>
+  <title>Manual Warmup &mdash; PyTorch Warmup 0.0.4 documentation</title>
   
 
   
@@ -178,6 +178,26 @@
 <dd class="field-odd"><p><strong>step</strong> (<em>int</em>) – The index of current step. (Default: None)</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pytorch_warmup.base.BaseWarmup.load_state_dict">
+<code class="sig-name descname">load_state_dict</code><span class="sig-paren">(</span><em class="sig-param">state_dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pytorch_warmup/base.html#BaseWarmup.load_state_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorch_warmup.base.BaseWarmup.load_state_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the warmup scheduler’s state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state_dict</strong> (<em>dict</em>) – warmup scheduler state. Should be an object returned
+from a call to <a class="reference internal" href="#pytorch_warmup.base.BaseWarmup.state_dict" title="pytorch_warmup.base.BaseWarmup.state_dict"><code class="xref py py-meth docutils literal notranslate"><span class="pre">state_dict()</span></code></a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pytorch_warmup.base.BaseWarmup.state_dict">
+<code class="sig-name descname">state_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pytorch_warmup/base.html#BaseWarmup.state_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorch_warmup.base.BaseWarmup.state_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the state of the warmup scheduler as a <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>.</p>
+<p>It contains an entry for every variable in self.__dict__ which
+is not the optimizer.</p>
 </dd></dl>
 
 </dd></dl>

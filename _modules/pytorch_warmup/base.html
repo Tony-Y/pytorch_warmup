@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pytorch_warmup.base &mdash; PyTorch Warmup 0.0.3 documentation</title>
+  <title>pytorch_warmup.base &mdash; PyTorch Warmup 0.0.4 documentation</title>
   
 
   
@@ -173,6 +173,23 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">last_step</span> <span class="o">=</span> <span class="n">last_step</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dampen</span><span class="p">()</span>
 
+<div class="viewcode-block" id="BaseWarmup.state_dict"><a class="viewcode-back" href="../../manual_warmup.html#pytorch_warmup.base.BaseWarmup.state_dict">[docs]</a>    <span class="k">def</span> <span class="nf">state_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the state of the warmup scheduler as a :class:`dict`.</span>
+
+<span class="sd">        It contains an entry for every variable in self.__dict__ which</span>
+<span class="sd">        is not the optimizer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s1">&#39;optimizer&#39;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="BaseWarmup.load_state_dict"><a class="viewcode-back" href="../../manual_warmup.html#pytorch_warmup.base.BaseWarmup.load_state_dict">[docs]</a>    <span class="k">def</span> <span class="nf">load_state_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_dict</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Loads the warmup scheduler&#39;s state.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            state_dict (dict): warmup scheduler state. Should be an object returned</span>
+<span class="sd">                from a call to :meth:`state_dict`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state_dict</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="BaseWarmup.dampen"><a class="viewcode-back" href="../../manual_warmup.html#pytorch_warmup.base.BaseWarmup.dampen">[docs]</a>    <span class="k">def</span> <span class="nf">dampen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Dampen the learning rates.</span>
 
@@ -204,7 +221,7 @@
         <span class="n">warmup_params</span> <span class="o">=</span> <span class="p">[</span><span class="nb">dict</span><span class="p">(</span><span class="n">warmup_period</span><span class="o">=</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">warmup_period</span><span class="p">]</span>
     <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">warmup_period</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">:</span>
         <span class="n">warmup_params</span> <span class="o">=</span> <span class="p">[</span><span class="nb">dict</span><span class="p">(</span><span class="n">warmup_period</span><span class="o">=</span><span class="n">warmup_period</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">group_count</span><span class="p">)]</span>
+                         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">group_count</span><span class="p">)]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> is not a list nor an int.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="nb">type</span><span class="p">(</span><span class="n">warmup_period</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
