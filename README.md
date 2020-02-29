@@ -54,6 +54,12 @@ for epoch in range(1,num_epochs+1):
         warmup_scheduler.dampen()
 ```
 
+For PyTorch 1.4, use an LR scheduler as the following:
+
+```
+        lr_scheduler.step(lr_scheduler.last_epoch+1)
+```
+
 #### Approach 2
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Tony-Y/colab-notebooks/blob/master/PyTorch_Warmup_Approach2.ipynb)
 
