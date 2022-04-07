@@ -39,8 +39,8 @@ def train(args, model, device, train_loader, optimizer, lr_scheduler,
         loss = F.nll_loss(output, target)
         loss.backward()
         optimizer.step()
-        lr_scheduler.step()
-        warmup_scheduler.dampen()
+        with warmup_scheduler.dampening():
+            lr_scheduler.step()
         if (batch_idx+1) % args.log_interval == 0:
             loss = loss.item()
             step = warmup_scheduler.last_step
