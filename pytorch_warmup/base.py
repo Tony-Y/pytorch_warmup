@@ -1,4 +1,5 @@
 import math
+from contextlib import contextmanager
 from torch.optim import Optimizer
 
 
@@ -18,6 +19,7 @@ class BaseWarmup(object):
         self.optimizer = optimizer
         self.warmup_params = warmup_params
         self.last_step = last_step
+        self.lrs = [group['lr'] for group in self.optimizer.param_groups]
         self.dampen()
 
     def state_dict(self):
@@ -50,6 +52,14 @@ class BaseWarmup(object):
         for group, params in zip(self.optimizer.param_groups, self.warmup_params):
             omega = self.warmup_factor(step, **params)
             group['lr'] *= omega
+
+    @contextmanager
+    def dampening(self):
+        for group, lr in zip(self.optimizer.param_groups, self.lrs):
+            group['lr'] = lr
+        yield
+        self.lrs = [group['lr'] for group in self.optimizer.param_groups]
+        self.dampen()
 
     def warmup_factor(self, step, **params):
         raise NotImplementedError

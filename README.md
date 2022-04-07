@@ -50,36 +50,44 @@ for epoch in range(1,num_epochs+1):
         loss = ...
         loss.backward()
         optimizer.step()
-        lr_scheduler.step()
-        warmup_scheduler.dampen()
+        with warmup_scheduler.dampening():
+            lr_scheduler.step()
 ```
 
-For PyTorch 1.4 or above, use an LR scheduler as the following:
-
-```
-        lr_scheduler.step(lr_scheduler.last_epoch+1)
+If you want to use the learning rate schedule "chaining" which is supported for PyTorch 1.4.0 or above, you may simply give a code of learning rate schedulers as a suite of the `with` statement:
+```python
+lr_scheduler1 = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.9)
+lr_scheduler2 = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=0.1)
+warmup_scheduler = warmup.UntunedLinearWarmup(optimizer)
+for epoch in range(1,num_epochs+1):
+    for batch in dataloader:
+        ...
+        optimizer.step()
+        with warmup_scheduler.dampening():
+            lr_scheduler1.step()
+            lr_scheduler2.step()
 ```
 
 #### Approach 2
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Tony-Y/colab-notebooks/blob/master/PyTorch_Warmup_Approach2.ipynb)
 
-When the learning rate schedule uses the epoch number, the warmup schedule can be used as follows (for PyTorch 1.2 or above):
+When the learning rate schedule uses the epoch number, the warmup schedule can be used as follows:
 
 ```python
 lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[num_epochs//3], gamma=0.1)
 warmup_scheduler = warmup.UntunedLinearWarmup(optimizer)
-warmup_scheduler.last_step = -1 # initialize the step counter
 for epoch in range(1,num_epochs+1):
-    for batch in dataloader:
-        lr_scheduler.step(epoch-1)
-        warmup_scheduler.dampen()
+    for iter, batch in enumerate(dataloader):
         optimizer.zero_grad()
         loss = ...
         loss.backward()
         optimizer.step()
+        if iter < len(dataloader)-1:
+            with warmup_scheduler.dampening():
+                pass
+    with warmup_scheduler.dampening():
+        lr_scheduler.step()
 ```
-
-The user warning about calling `lr_scheduler.step()` before `optimizer.step()` may be ignored.
 
 ### Warmup Schedules
 

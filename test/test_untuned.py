@@ -31,8 +31,8 @@ class TestUntuned(unittest.TestCase):
                 self.assertAlmostEqual(lr[1], 0.1)
             optimizer.zero_grad()
             optimizer.step()
-            lr_scheduler.step()
-            warmup_scheduler.dampen()
+            with warmup_scheduler.dampening():
+                lr_scheduler.step()
 
         _test_state_dict(self, warmup_scheduler,
                          lambda: warmup.UntunedLinearWarmup(optimizer))
@@ -53,8 +53,8 @@ class TestUntuned(unittest.TestCase):
             self.assertAlmostEqual(lr[1], 0.1 * (1 - math.exp(-step / 3)))
             optimizer.zero_grad()
             optimizer.step()
-            lr_scheduler.step()
-            warmup_scheduler.dampen()
+            with warmup_scheduler.dampening():
+                lr_scheduler.step()
 
         _test_state_dict(self, warmup_scheduler,
                          lambda: warmup.UntunedExponentialWarmup(optimizer))
