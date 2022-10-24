@@ -13,9 +13,9 @@ jobs:
         os: [macos-latest, windows-latest, ubuntu-latest]
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
@@ -36,7 +36,7 @@ jobs:
       run: |
         cd artifact
         python ../examples/plots/warmup_schedule.py --output png
-    - uses: actions/upload-artifact@master
+    - uses: actions/upload-artifact@v3
       with:
         name: artifact_${{ matrix.os }}_${{ matrix.python-version }}
         path: artifact
