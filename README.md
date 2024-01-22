@@ -68,6 +68,21 @@ for epoch in range(1,num_epochs+1):
             lr_scheduler2.step()
 ```
 
+If you want to start the learning rate schedule after the end of the linear warmup, delay it by the warmup period:
+```python
+warmup_period = 2000
+num_steps = len(dataloader) * num_epochs - warmup_period
+lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=num_steps)
+warmup_scheduler = warmup.LinearWarmup(optimizer, warmup_period)
+for epoch in range(1,num_epochs+1):
+    for batch in dataloader:
+        ...
+        optimizer.step()
+        with warmup_scheduler.dampening():
+            if warmup_scheduler.last_step + 1 >= warmup_period:
+                lr_scheduler.step()
+```
+
 #### Approach 2
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Tony-Y/colab-notebooks/blob/master/PyTorch_Warmup_Approach2_chaining.ipynb)
 
