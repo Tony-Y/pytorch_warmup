@@ -104,6 +104,20 @@ for epoch in range(1,num_epochs+1):
         lr_scheduler.step()
 ```
 
+This code can be rewritten more compactly:
+
+```python
+for epoch in range(1,num_epochs+1):
+    for iter, batch in enumerate(dataloader):
+        optimizer.zero_grad()
+        loss = ...
+        loss.backward()
+        optimizer.step()
+        with warmup_scheduler.dampening():
+            if iter + 1 == len(dataloader):
+                lr_scheduler.step()
+```
+
 ### Warmup Schedules
 
 #### Manual Warmup
