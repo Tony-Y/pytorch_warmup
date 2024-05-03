@@ -9,14 +9,14 @@ jobs:
     strategy:
       max-parallel: 8
       matrix:
-        python-version: [3.7, 3.8, 3.9, 3.10, 3.11, 3.12]
+        python-version: [3.7, 3.8, 3.9, '3.10', 3.11, 3.12]
         os: [macos-13, windows-latest, ubuntu-latest]
         include:
           - pytorch-version: 1.4.0
           - pytorch-version: 1.7.1
             python-version: 3.9
           - pytorch-version: 1.11.0
-            python-version: 3.10
+            python-version: '3.10'
           - pytorch-version: 1.13.0
             python-version: 3.11
           - pytorch-version: 2.2.0
