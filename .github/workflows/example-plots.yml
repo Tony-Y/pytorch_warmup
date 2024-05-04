@@ -43,6 +43,7 @@ jobs:
         pip install numpy -U
         pip install torch==${{ matrix.pytorch-version }}${{ matrix.pytorch-option }} -f https://download.pytorch.org/whl/torch_stable.html
         pip install matplotlib
+        pip install setuptools
     - name: Install package
       run: python setup.py install
     - name: Preparation
