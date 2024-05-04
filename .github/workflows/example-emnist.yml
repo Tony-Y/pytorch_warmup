@@ -54,6 +54,7 @@ jobs:
         pip install numpy -U
         pip install torch==${{ matrix.pytorch-version }}${{ matrix.pytorch-option }} torchvision==${{ matrix.torchvision-version }}${{ matrix.pytorch-option }} -f https://download.pytorch.org/whl/torch_stable.html
         pip install setuptools
+        pip install requests
     - name: Install package
       run: python setup.py install
     - name: Download EMNIST dataset
