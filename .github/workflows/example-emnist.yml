@@ -44,7 +44,7 @@ jobs:
         pip install setuptools
         pip install requests
     - name: Install package
-      run: python setup.py install
+      run: python -m pip install .
     - name: Download EMNIST dataset
       run: python examples/emnist/download.py
     - name: Train a model on EMNIST dataset

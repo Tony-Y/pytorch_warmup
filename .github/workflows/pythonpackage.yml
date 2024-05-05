@@ -47,3 +47,7 @@ jobs:
       run: |
         pip install pytest
         pytest test -s -vv
+    - name: Package with build
+      run: |
+        pip install setuptools build
+        python -m build

@@ -39,7 +39,7 @@ jobs:
         pip install matplotlib
         pip install setuptools
     - name: Install package
-      run: python setup.py install
+      run: python -m pip install .
     - name: Preparation
       run: mkdir artifact
     - name: Plot warmup period
