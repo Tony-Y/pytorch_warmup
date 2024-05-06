@@ -11,13 +11,13 @@ This library contains PyTorch implementations of the warmup schedules described 
 
 ## Installation
 
-Make sure you have Python 3.6+ and PyTorch 1.1+. Then, run the following command:
+Make sure you have Python 3.7+ and PyTorch 1.1+. Then, run the following command in the project directory:
 
 ```
-python setup.py install
+python -m pip install .
 ```
 
-or
+or install the latest version from the Python Package Index:
 
 ```
 pip install -U pytorch_warmup
@@ -92,12 +92,12 @@ When the learning rate schedule uses the epoch number, the warmup schedule can b
 lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[num_epochs//3], gamma=0.1)
 warmup_scheduler = warmup.UntunedLinearWarmup(optimizer)
 for epoch in range(1,num_epochs+1):
-    for iter, batch in enumerate(dataloader):
+    for i, batch in enumerate(dataloader):
         optimizer.zero_grad()
         loss = ...
         loss.backward()
         optimizer.step()
-        if iter < len(dataloader)-1:
+        if i < len(dataloader)-1:
             with warmup_scheduler.dampening():
                 pass
     with warmup_scheduler.dampening():
@@ -108,14 +108,34 @@ This code can be rewritten more compactly:
 
 ```python
 for epoch in range(1,num_epochs+1):
-    for iter, batch in enumerate(dataloader):
+    for i, batch in enumerate(dataloader):
         optimizer.zero_grad()
         loss = ...
         loss.backward()
         optimizer.step()
         with warmup_scheduler.dampening():
-            if iter + 1 == len(dataloader):
+            if i + 1 == len(dataloader):
                 lr_scheduler.step()
+```
+
+#### Approach 3
+When you use `CosineAnnealingWarmRestarts`, the warmup schedule can be used as follows:
+
+```python
+lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, T_0=10, T_mult=2)
+warmup_period = 2000
+warmup_scheduler = warmup.LinearWarmup(optimizer, warmup_period)
+iters = len(dataloader)
+warmup_epochs = ... # for example, (warmup_period + iters - 1) // iters
+for epoch in range(epochs+warmup_epochs):
+    for i, batch in enumerate(dataloader):
+        optimizer.zero_grad()
+        loss = ...
+        loss.backward()
+        optimizer.step()
+        with warmup_scheduler.dampening():
+            if epoch >= warmup_epochs:
+                lr_scheduler.step(epoch-warmup_epochs + i / iters)
 ```
 
 ### Warmup Schedules
