@@ -5,7 +5,6 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pytorch-warmup",
-    version="0.1.1",
     author="Takenori Yamamoto",
     author_email="yamamoto.takenory@gmail.com",
     description="A PyTorch Extension for Learning Rate Warmup",
