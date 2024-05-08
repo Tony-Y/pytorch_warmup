@@ -3,7 +3,7 @@ name: Download emnist
 on: [push]
 
 jobs:
-  build:
+  download:
 
     runs-on: ubuntu-latest
     strategy:

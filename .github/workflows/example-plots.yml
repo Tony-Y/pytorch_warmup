@@ -3,7 +3,7 @@ name: Example plots
 on: [push]
 
 jobs:
-  build:
+  plot:
 
     runs-on: ${{ matrix.os }}
     strategy:
