@@ -1,7 +1,7 @@
 import argparse
 import matplotlib.pyplot as plt
 import torch
-from pytorch_warmup import *
+from pytorch_warmup import RAdamWarmup, UntunedExponentialWarmup, UntunedLinearWarmup
 
 
 def get_rates(warmup_cls, beta2, max_step):

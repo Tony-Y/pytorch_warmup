@@ -66,17 +66,17 @@ class BaseWarmup(object):
 
 
 def get_warmup_params(warmup_period, group_count):
-    if type(warmup_period) == list:
+    if isinstance(warmup_period, list):
         if len(warmup_period) != group_count:
             raise ValueError(
                 'size of warmup_period does not equal {}.'.format(group_count))
         for x in warmup_period:
-            if type(x) != int:
+            if not isinstance(x, int):
                 raise ValueError(
                     'An element in warmup_period, {}, is not an int.'.format(
                         type(x).__name__))
         warmup_params = [dict(warmup_period=x) for x in warmup_period]
-    elif type(warmup_period) == int:
+    elif isinstance(warmup_period, int):
         warmup_params = [dict(warmup_period=warmup_period)
                          for _ in range(group_count)]
     else:
