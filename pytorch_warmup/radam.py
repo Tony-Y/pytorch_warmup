@@ -1,5 +1,5 @@
 import math
-from .base import BaseWarmup
+from .base import BaseWarmup, _check_optimizer
 
 
 def rho_inf_fn(beta2):
@@ -35,6 +35,7 @@ class RAdamWarmup(BaseWarmup):
     """
 
     def __init__(self, optimizer, last_step=-1):
+        _check_optimizer(optimizer)
         warmup_params = [
             dict(
                 beta2=x['betas'][1],
