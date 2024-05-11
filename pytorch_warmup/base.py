@@ -3,6 +3,12 @@ from contextlib import contextmanager
 from torch.optim import Optimizer
 
 
+def _check_optimizer(optimizer):
+    if not isinstance(optimizer, Optimizer):
+        raise TypeError('{} ({}) is not an Optimizer.'.format(
+            optimizer, type(optimizer).__name__))
+
+
 class BaseWarmup(object):
     """Base class for all warmup schedules
 
@@ -13,9 +19,6 @@ class BaseWarmup(object):
     """
 
     def __init__(self, optimizer, warmup_params, last_step=-1):
-        if not isinstance(optimizer, Optimizer):
-            raise TypeError('{} is not an Optimizer'.format(
-                type(optimizer).__name__))
         self.optimizer = optimizer
         self.warmup_params = warmup_params
         self.last_step = last_step
@@ -69,19 +72,26 @@ def get_warmup_params(warmup_period, group_count):
     if isinstance(warmup_period, list):
         if len(warmup_period) != group_count:
             raise ValueError(
-                'size of warmup_period does not equal {}.'.format(group_count))
+                'The size of warmup_period ({}) does not match the size of param_groups ({}).'.format(
+                    len(warmup_period), group_count))
         for x in warmup_period:
             if not isinstance(x, int):
-                raise ValueError(
+                raise TypeError(
                     'An element in warmup_period, {}, is not an int.'.format(
                         type(x).__name__))
+            if x <= 0:
+                raise ValueError(
+                    'An element in warmup_period must be a positive integer, but is {}.'.format(x))
         warmup_params = [dict(warmup_period=x) for x in warmup_period]
     elif isinstance(warmup_period, int):
+        if warmup_period <= 0:
+            raise ValueError(
+                'warmup_period must be a positive integer, but is {}.'.format(warmup_period))
         warmup_params = [dict(warmup_period=warmup_period)
                          for _ in range(group_count)]
     else:
-        raise TypeError('{} is not a list nor an int.'.format(
-            type(warmup_period).__name__))
+        raise TypeError('{} ({}) is not a list nor an int.'.format(
+            warmup_period, type(warmup_period).__name__))
     return warmup_params
 
 
@@ -95,6 +105,7 @@ class LinearWarmup(BaseWarmup):
     """
 
     def __init__(self, optimizer, warmup_period, last_step=-1):
+        _check_optimizer(optimizer)
         group_count = len(optimizer.param_groups)
         warmup_params = get_warmup_params(warmup_period, group_count)
         super(LinearWarmup, self).__init__(optimizer, warmup_params, last_step)
@@ -113,6 +124,7 @@ class ExponentialWarmup(BaseWarmup):
     """
 
     def __init__(self, optimizer, warmup_period, last_step=-1):
+        _check_optimizer(optimizer)
         group_count = len(optimizer.param_groups)
         warmup_params = get_warmup_params(warmup_period, group_count)
         super(ExponentialWarmup, self).__init__(optimizer, warmup_params, last_step)

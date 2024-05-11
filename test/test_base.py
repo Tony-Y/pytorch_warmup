@@ -14,6 +14,34 @@ def _test_state_dict(self, warmup_scheduler, constructor):
                                    warmup_scheduler_copy.__dict__[key])
 
 
+def _test_optimizer(self, warmup_class):
+    with self.assertRaises(TypeError, msg='optimizer type') as cm:
+        warmup_class(optimizer=0, warmup_period=5)
+    self.assertEqual(str(cm.exception), '0 (int) is not an Optimizer.')
+
+
+def _test_get_warmup_params(self, optimizer, warmup_class):
+    with self.assertRaises(ValueError, msg='warmup_period size') as cm:
+        warmup_class(optimizer, warmup_period=[5])
+    self.assertEqual(str(cm.exception), 'The size of warmup_period (1) does not match the size of param_groups (2).')
+
+    with self.assertRaises(TypeError, msg='warmup_period element type') as cm:
+        warmup_class(optimizer, warmup_period=[5.0, 10.0])
+    self.assertEqual(str(cm.exception), 'An element in warmup_period, float, is not an int.')
+
+    with self.assertRaises(ValueError, msg='warmup_period element range') as cm:
+        warmup_class(optimizer, warmup_period=[5, 0])
+    self.assertEqual(str(cm.exception), 'An element in warmup_period must be a positive integer, but is 0.')
+
+    with self.assertRaises(ValueError, msg='warmup_period range') as cm:
+        warmup_class(optimizer, warmup_period=0)
+    self.assertEqual(str(cm.exception), 'warmup_period must be a positive integer, but is 0.')
+
+    with self.assertRaises(TypeError, msg='warmup_period type') as cm:
+        warmup_class(optimizer, warmup_period=5.0)
+    self.assertEqual(str(cm.exception), '5.0 (float) is not a list nor an int.')
+
+
 class TestBase(unittest.TestCase):
 
     def setUp(self):
@@ -45,6 +73,10 @@ class TestBase(unittest.TestCase):
         _test_state_dict(self, warmup_scheduler,
                          lambda: warmup.LinearWarmup(optimizer, warmup_period=10))
 
+        _test_optimizer(self, warmup.LinearWarmup)
+
+        _test_get_warmup_params(self, optimizer, warmup.LinearWarmup)
+
     def test_exponetial(self):
         p1 = torch.nn.Parameter(torch.arange(10, dtype=torch.float32).to(self.device))
         p2 = torch.nn.Parameter(torch.arange(10, dtype=torch.float32).to(self.device))
@@ -66,6 +98,10 @@ class TestBase(unittest.TestCase):
 
         _test_state_dict(self, warmup_scheduler,
                          lambda: warmup.ExponentialWarmup(optimizer, warmup_period=10))
+
+        _test_optimizer(self, warmup.ExponentialWarmup)
+
+        _test_get_warmup_params(self, optimizer, warmup.ExponentialWarmup)
 
     def test_linear_chaining(self):
         def preparation():

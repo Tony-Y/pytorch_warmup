@@ -6,6 +6,12 @@ import pytorch_warmup as warmup
 from .test_base import _test_state_dict
 
 
+def _test_optimizer(self, warmup_class):
+    with self.assertRaises(TypeError, msg='optimizer type') as cm:
+        warmup_class(optimizer=0)
+    self.assertEqual(str(cm.exception), '0 (int) is not an Optimizer.')
+
+
 class TestUntuned(unittest.TestCase):
 
     def setUp(self):
@@ -37,6 +43,8 @@ class TestUntuned(unittest.TestCase):
         _test_state_dict(self, warmup_scheduler,
                          lambda: warmup.UntunedLinearWarmup(optimizer))
 
+        _test_optimizer(self, warmup.UntunedLinearWarmup)
+
     def test_untuned_exponetial(self):
         p1 = torch.nn.Parameter(torch.arange(10, dtype=torch.float32).to(self.device))
         p2 = torch.nn.Parameter(torch.arange(10, dtype=torch.float32).to(self.device))
@@ -58,3 +66,5 @@ class TestUntuned(unittest.TestCase):
 
         _test_state_dict(self, warmup_scheduler,
                          lambda: warmup.UntunedExponentialWarmup(optimizer))
+
+        _test_optimizer(self, warmup.UntunedExponentialWarmup)
