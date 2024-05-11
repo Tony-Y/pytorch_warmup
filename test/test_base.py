@@ -22,7 +22,7 @@ def _test_optimizer(self, warmup_class):
 
 def _test_get_warmup_params(self, optimizer, warmup_class):
     with self.assertRaises(ValueError, msg='warmup_period size') as cm:
-         warmup_class(optimizer, warmup_period=[5])
+        warmup_class(optimizer, warmup_period=[5])
     self.assertEqual(str(cm.exception), 'The size of warmup_period (1) does not match the size of param_groups (2).')
 
     with self.assertRaises(TypeError, msg='warmup_period element type') as cm:
@@ -38,7 +38,7 @@ def _test_get_warmup_params(self, optimizer, warmup_class):
     self.assertEqual(str(cm.exception), 'warmup_period must be a positive integer, but is 0.')
 
     with self.assertRaises(TypeError, msg='warmup_period type') as cm:
-         warmup_class(optimizer, warmup_period=5.0)
+        warmup_class(optimizer, warmup_period=5.0)
     self.assertEqual(str(cm.exception), '5.0 (float) is not a list nor an int.')
 
 

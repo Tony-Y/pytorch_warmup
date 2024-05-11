@@ -15,6 +15,7 @@ class UntunedLinearWarmup(LinearWarmup):
 
     def __init__(self, optimizer, last_step=-1):
         _check_optimizer(optimizer)
+
         def warmup_period_fn(beta2):
             return int(2.0 / (1.0-beta2))
         warmup_period = [warmup_period_fn(x['betas'][1]) for x in optimizer.param_groups]
@@ -35,6 +36,7 @@ class UntunedExponentialWarmup(ExponentialWarmup):
 
     def __init__(self, optimizer, last_step=-1):
         _check_optimizer(optimizer)
+
         def warmup_period_fn(beta2):
             return int(1.0 / (1.0-beta2))
         warmup_period = [warmup_period_fn(x['betas'][1]) for x in optimizer.param_groups]
