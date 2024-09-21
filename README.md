@@ -53,6 +53,7 @@ for epoch in range(1,num_epochs+1):
         with warmup_scheduler.dampening():
             lr_scheduler.step()
 ```
+Note that the warmup schedule must not be initialized before the learning rate schedule.
 
 If you want to use the learning rate schedule "chaining" which is supported for PyTorch 1.4.0 or above, you may simply give a code of learning rate schedulers as a suite of the `with` statement:
 ```python
