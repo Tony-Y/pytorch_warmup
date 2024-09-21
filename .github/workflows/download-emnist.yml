@@ -21,7 +21,7 @@ jobs:
       run: |
         sudo apt-get update && sudo apt-get install -y libtinfo5
         python -m pip install --upgrade pip
-        pip install numpy<2 -U
+        pip install 'numpy<2' -U
         pip install torchvision==${{ matrix.torchvision-version }} -f https://download.pytorch.org/whl/torch_stable.html
         pip install setuptools
         pip install requests
