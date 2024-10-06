@@ -39,7 +39,6 @@ jobs:
       - name: Sphinx Build
         run: |
           cd docs/
-          mkdir _static
           make html
           touch _build/html/.nojekyll
       - name: Upload artifact
