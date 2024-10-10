@@ -10,12 +10,21 @@ def _check_optimizer(optimizer):
 
 
 class BaseWarmup(object):
-    """Base class for all warmup schedules
+    """Base class for all warmup schedules.
 
-    Arguments:
-        optimizer (Optimizer): an instance of a subclass of Optimizer
-        warmup_params (list): warmup paramters
-        last_step (int): The index of last step. (Default: -1)
+    The learning rate :math:`\\alpha_{t}` is dampened by multiplying it by
+    the warmup factor :math:`\\omega_{t} \\in [0, 1]` at each iteration :math:`t`.
+    Thus, the modified learning rate
+
+        .. math::
+            \\hat \\alpha_{t} = \\alpha_{t} \\cdot \\omega_{t}
+
+    is used by the optimizer.
+
+    Args:
+        optimizer (Optimizer): Wrapped optimizer.
+        warmup_params (list): Warmup parameters.
+        last_step (int): The index of last step. Default: -1.
     """
 
     def __init__(self, optimizer, warmup_params, last_step=-1):
@@ -28,7 +37,7 @@ class BaseWarmup(object):
     def state_dict(self):
         """Returns the state of the warmup scheduler as a :class:`dict`.
 
-        It contains an entry for every variable in self.__dict__ which
+        It contains an entry for every variable in :attr:`self.__dict__` which
         is not the optimizer.
         """
         return {key: value for key, value in self.__dict__.items() if key != 'optimizer'}
@@ -36,17 +45,20 @@ class BaseWarmup(object):
     def load_state_dict(self, state_dict):
         """Loads the warmup scheduler's state.
 
-        Arguments:
-            state_dict (dict): warmup scheduler state. Should be an object returned
+        Args:
+            state_dict (dict): Warmup scheduler state. Should be an object returned
                 from a call to :meth:`state_dict`.
         """
         self.__dict__.update(state_dict)
 
     def dampen(self, step=None):
-        """Dampen the learning rates.
+        """Dampens the learning rate.
 
-        Arguments:
-            step (int): The index of current step. (Default: None)
+        It is not recommended to explicitly call this method for PyTorch 1.4.0 or later.
+        Please use the :meth:`dampening` context manager that calls this method correctly.
+
+        Args:
+            step (int): The index of current step. Default: ``None``.
         """
         if step is None:
             step = self.last_step + 1
@@ -58,6 +70,32 @@ class BaseWarmup(object):
 
     @contextmanager
     def dampening(self):
+        """Dampens the learning rate after calling the :meth:`step` method of the learning
+        rate scheduler.
+
+        The :meth:`step` method calls must be placed in a suite of the ``with`` statement having
+        the :meth:`dampening` context manager.
+
+        Examples:
+            >>> # For no LR scheduler
+            >>> with warmup_scheduler.dampening():
+            >>>     pass
+
+            >>> # For a single LR scheduler
+            >>> with warmup_scheduler.dampening():
+            >>>     lr_scheduler.step()
+
+            >>> # To chain two LR schedulers
+            >>> with warmup_scheduler.dampening():
+            >>>     lr_scheduler1.step()
+            >>>     lr_scheduler2.step()
+
+            >>> # To delay an LR scheduler
+            >>> iteration = warmup_scheduler.last_step + 1
+            >>> with warmup_scheduler.dampening():
+            >>>     if iteration >= warmup_period:
+            >>>         lr_scheduler.step()
+        """
         for group, lr in zip(self.optimizer.param_groups, self.lrs):
             group['lr'] = lr
         yield
@@ -65,6 +103,16 @@ class BaseWarmup(object):
         self.dampen()
 
     def warmup_factor(self, step, **params):
+        """Returns the warmup factor :math:`\\omega_{t}` at an iteration :math:`t`.
+
+        :meth:`dampen` uses this method to get the warmup factor for each parameter group.
+        It is unnecessary to explicitly call this method.
+
+        Args:
+            step (int): The index of current step.
+            params (dict): The warmup parameters. For details, refer to the arguments of
+                each subclass method.
+        """
         raise NotImplementedError
 
 
@@ -98,10 +146,32 @@ def get_warmup_params(warmup_period, group_count):
 class LinearWarmup(BaseWarmup):
     """Linear warmup schedule.
 
-    Arguments:
-        optimizer (Optimizer): an instance of a subclass of Optimizer
-        warmup_period (int or list): Warmup period
-        last_step (int): The index of last step. (Default: -1)
+    The linear warmup schedule uses the warmup factor
+
+        .. math::
+            \\omega_{t}^{\\rm linear, \\tau} = \\min \\{ 1, \\frac{1}{\\tau} \\cdot t \\}
+
+    at each iteration :math:`t`, where :math:`\\tau` is the warmup period.
+
+    Args:
+        optimizer (Optimizer): Wrapped optimizer. :class:`RAdam` is not suitable because of the
+            warmup redundancy.
+        warmup_period (int or list[int]): The warmup period :math:`\\tau`.
+        last_step (int): The index of last step. Default: -1.
+
+    Example:
+        >>> lr_scheduler = CosineAnnealingLR(optimizer, ...)
+        >>> warmup_scheduler = LinearWarmup(optimizer, warmup_period=2000)
+        >>> for batch in dataloader:
+        >>>     optimizer.zero_grad()
+        >>>     loss = ...
+        >>>     loss.backward()
+        >>>     optimizer.step()
+        >>>     with warmup_scheduler.dampening():
+        >>>         lr_scheduler.step()
+
+    Note:
+        The warmup schedule must not be initialized before the initialization of the learning rate schedule.
     """
 
     def __init__(self, optimizer, warmup_period, last_step=-1):
@@ -111,16 +181,45 @@ class LinearWarmup(BaseWarmup):
         super(LinearWarmup, self).__init__(optimizer, warmup_params, last_step)
 
     def warmup_factor(self, step, warmup_period):
+        """Returns the warmup factor :math:`\\omega_{t}^{\\rm linear, \\tau}` at an iteration :math:`t`.
+
+        Args:
+            step (int): The index of current step.
+            warmup_period (int): The warmup period :math:`\\tau`.
+        """
         return min(1.0, (step+1) / warmup_period)
 
 
 class ExponentialWarmup(BaseWarmup):
     """Exponential warmup schedule.
 
-    Arguments:
-        optimizer (Optimizer): an instance of a subclass of Optimizer
-        warmup_period (int or list): Effective warmup period
-        last_step (int): The index of last step. (Default: -1)
+    The exponential warmup schedule uses the warmup factor
+
+        .. math::
+            \\omega_{t}^{\\rm expo, \\tau} =  1 - \\exp \\left( - \\frac{1}{\\tau} \\cdot t \\right)
+
+    at each iteration :math:`t`, where the constant :math:`\\tau` is analogous to
+    a linear warmup period.
+
+    Args:
+        optimizer (Optimizer): Wrapped optimizer. :class:`RAdam` is not suitable because of the
+            warmup redundancy.
+        warmup_period (int or list[int]): The constant :math:`\\tau` analogous to a linear warmup period.
+        last_step (int): The index of last step. Default: -1.
+
+    Example:
+        >>> lr_scheduler = CosineAnnealingLR(optimizer, ...)
+        >>> warmup_scheduler = ExponentialWarmup(optimizer, warmup_period=1000)
+        >>> for batch in dataloader:
+        >>>     optimizer.zero_grad()
+        >>>     loss = ...
+        >>>     loss.backward()
+        >>>     optimizer.step()
+        >>>     with warmup_scheduler.dampening():
+        >>>         lr_scheduler.step()
+
+    Note:
+        The warmup schedule must not be initialized before the initialization of the learning rate schedule.
     """
 
     def __init__(self, optimizer, warmup_period, last_step=-1):
@@ -130,4 +229,10 @@ class ExponentialWarmup(BaseWarmup):
         super(ExponentialWarmup, self).__init__(optimizer, warmup_params, last_step)
 
     def warmup_factor(self, step, warmup_period):
+        """Returns the warmup factor :math:`\\omega_{t}^{\\rm expo, \\tau}` at an iteration :math:`t`.
+
+        Args:
+            step (int): The index of current step.
+            warmup_period (int): The constant :math:`\\tau` analogous to a linear warmup period.
+        """
         return 1.0 - math.exp(-(step+1) / warmup_period)
