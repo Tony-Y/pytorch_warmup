@@ -33,6 +33,5 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
     ],
     python_requires='>=3.7',
-    test_suite='test',
     install_requires=['torch>=1.1']
 )
