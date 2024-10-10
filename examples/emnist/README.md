@@ -90,4 +90,4 @@ options:
   --save-model          For Saving the current Model
 ```
 
-© 2024 Takenori Yamamoto
+&copy; 2024 Takenori Yamamoto

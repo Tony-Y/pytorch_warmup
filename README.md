@@ -28,7 +28,7 @@ pip install -U pytorch_warmup
 * [EMNIST](https://github.com/Tony-Y/pytorch_warmup/tree/master/examples/emnist) -
  A sample script to train a CNN model on the EMNIST dataset using the Adam algorithm with a warmup.
 * [Plots](https://github.com/Tony-Y/pytorch_warmup/tree/master/examples/plots) -
- A script to plot effective warmup periods as a function of 𝛽₂, and warmup schedules over time.
+ A script to plot effective warmup periods as a function of &beta;&#8322;, and warmup schedules over time.
 
 ## Usage
 
@@ -221,4 +221,4 @@ warmup_scheduler = warmup.UntunedLinearWarmup(optimizer)
 
 MIT License
 
-© 2019-2024 Takenori Yamamoto
+&copy; 2019-2024 Takenori Yamamoto

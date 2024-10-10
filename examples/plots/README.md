@@ -6,7 +6,7 @@ Requirements: `pytorch_warmup` and `matplotlib`.
 
 <p align="center">
   <img src="https://github.com/Tony-Y/pytorch_warmup/raw/master/examples/plots/figs/warmup_period.png" alt="Warmup period" width="400"/></br>
-  <i>Effective warmup periods of RAdam and rule-of-thumb warmup schedules, as a function of 𝛽₂.</i>
+  <i>Effective warmup periods of RAdam and rule-of-thumb warmup schedules, as a function of &beta;&#8322;.</i>
 </p>
 
 Run the Python script `effective_warmup_period.py` to show up the figure above:
@@ -32,7 +32,7 @@ options:
 
 <p align="center">
   <img src="https://github.com/Tony-Y/pytorch_warmup/raw/master/examples/plots/figs/warmup_schedule.png" alt="Warmup schedule" width="400"/></br>
-  <i>RAdam and rule-of-thumb warmup schedules over time for 𝛽₂ = 0.999.</i>
+  <i>RAdam and rule-of-thumb warmup schedules over time for &beta;&#8322; = 0.999.</i>
 </p>
 
 Run the Python script `warmup_schedule.py` to show up the figure above:
@@ -54,4 +54,4 @@ options:
                         Output file type (default: none)
 ```
 
-© 2024 Takenori Yamamoto
+&copy; 2024 Takenori Yamamoto
