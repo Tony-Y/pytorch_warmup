@@ -4,26 +4,35 @@ This library contains PyTorch implementations of the warmup schedules described 
 
 <p align="center"><img src="https://github.com/Tony-Y/pytorch_warmup/raw/master/examples/plots/figs/warmup_schedule.png" alt="Warmup schedule" width="400"/></p>
 
-![Python package](https://github.com/Tony-Y/pytorch_warmup/workflows/Python%20package/badge.svg)
+[![Python package](https://github.com/Tony-Y/pytorch_warmup/workflows/Python%20package/badge.svg)](https://github.com/Tony-Y/pytorch_warmup/)
 [![PyPI version shields.io](https://img.shields.io/pypi/v/pytorch-warmup.svg)](https://pypi.python.org/pypi/pytorch-warmup/)
-[![PyPI license](https://img.shields.io/pypi/l/pytorch-warmup.svg)](https://pypi.python.org/pypi/pytorch-warmup/)
-[![PyPI pyversions](https://img.shields.io/pypi/pyversions/pytorch-warmup.svg)](https://pypi.python.org/pypi/pytorch-warmup/)
+[![PyPI license](https://img.shields.io/pypi/l/pytorch-warmup.svg)](https://github.com/Tony-Y/pytorch_warmup/blob/master/LICENSE)
+[![Python versions](https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org)
 
 ## Installation
 
-Make sure you have Python 3.7+ and PyTorch 1.1+. Then, run the following command in the project directory:
+Make sure you have Python 3.7+ and PyTorch 1.1+ or 2.x. Then, run the following command in the project directory:
 
-```
+```shell
 python -m pip install .
 ```
 
 or install the latest version from the Python Package Index:
 
-```
+```shell
 pip install -U pytorch_warmup
 ```
 
+## Examples
+
+* [EMNIST](https://github.com/Tony-Y/pytorch_warmup/tree/master/examples/emnist) -
+ A sample script to train a CNN model on the EMNIST dataset using the Adam algorithm with a warmup.
+* [Plots](https://github.com/Tony-Y/pytorch_warmup/tree/master/examples/plots) -
+ A script to plot effective warmup periods as a function of &beta;&#8322;, and warmup schedules over time.
+
 ## Usage
+
+The [Documentation](https://tony-y.github.io/pytorch_warmup/) provides more detailed information on this library, unseen below. 
 
 ### Sample Codes
 
@@ -34,16 +43,20 @@ The scheduled learning rate is dampened by the multiplication of the warmup fact
 #### Approach 1
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Tony-Y/colab-notebooks/blob/master/PyTorch_Warmup_Approach1_chaining.ipynb)
 
-When the learning rate schedule uses the global iteration number, the untuned linear warmup can be used as follows:
+When the learning rate schedule uses the global iteration number, the untuned linear warmup can be used
+together with `Adam` or its variant (`AdamW`, `NAdam`, etc.) as follows:
 
 ```python
 import torch
 import pytorch_warmup as warmup
 
 optimizer = torch.optim.AdamW(params, lr=0.001, betas=(0.9, 0.999), weight_decay=0.01)
+    # This sample code uses the AdamW optimizer.
 num_steps = len(dataloader) * num_epochs
 lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=num_steps)
+    # The LR schedule initialization resets the initial LR of the optimizer.
 warmup_scheduler = warmup.UntunedLinearWarmup(optimizer)
+    # The warmup schedule initialization dampens the initial LR of the optimizer.
 for epoch in range(1,num_epochs+1):
     for batch in dataloader:
         optimizer.zero_grad()
@@ -53,9 +66,9 @@ for epoch in range(1,num_epochs+1):
         with warmup_scheduler.dampening():
             lr_scheduler.step()
 ```
-Note that the warmup schedule must not be initialized before the learning rate schedule.
+Note that the warmup schedule must not be initialized before the initialization of the learning rate schedule.
 
-If you want to use the learning rate schedule "chaining" which is supported for PyTorch 1.4.0 or above, you may simply give a code of learning rate schedulers as a suite of the `with` statement:
+If you want to use the learning rate schedule *chaining*, which is supported for PyTorch 1.4 or above, you may simply write a code of learning rate schedulers as a suite of the `with` statement:
 ```python
 lr_scheduler1 = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.9)
 lr_scheduler2 = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=0.1)
@@ -163,7 +176,7 @@ warmup_scheduler = warmup.ExponentialWarmup(optimizer, warmup_period=1000)
 
 #### Untuned Warmup
 
-The warmup period is given by a function of Adam's `beta2` parameter for `UntunedLinearWarmup` and `UntunedExponentialWarmup`.
+The warmup period is determined by a function of Adam's `beta2` parameter for `UntunedLinearWarmup` and `UntunedExponentialWarmup`.
 
 ##### Linear
 
@@ -183,7 +196,9 @@ warmup_scheduler = warmup.UntunedExponentialWarmup(optimizer)
 
 #### RAdam Warmup
 
-The warmup factor depends on Adam's `beta2` parameter for `RAdamWarmup`. Please see the original paper for the details.
+The warmup factor depends on Adam's `beta2` parameter for `RAdamWarmup`. For details please refer to the
+[Documentation](https://tony-y.github.io/pytorch_warmup/radam_warmup.html) or
+"[On the Variance of the Adaptive Learning Rate and Beyond](https://arxiv.org/abs/1908.03265)."
 
 ```python
 warmup_scheduler = warmup.RAdamWarmup(optimizer)
@@ -191,7 +206,7 @@ warmup_scheduler = warmup.RAdamWarmup(optimizer)
 
 ### Apex's Adam
 
-The Apex library provides an Adam optimizer tuned for CUDA devices, [FusedAdam](https://nvidia.github.io/apex/optimizers.html#apex.optimizers.FusedAdam). The FusedAdam optimizer can be used with the warmup schedulers. For example:
+The Apex library provides an Adam optimizer tuned for CUDA devices, [FusedAdam](https://nvidia.github.io/apex/optimizers.html#apex.optimizers.FusedAdam). The FusedAdam optimizer can be used together with any one of the warmup schedules above. For example:
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Tony-Y/colab-notebooks/blob/master/PyTorch_Warmup_FusedAdam.ipynb)
 
@@ -206,4 +221,4 @@ warmup_scheduler = warmup.UntunedLinearWarmup(optimizer)
 
 MIT License
 
-Copyright (c) 2019 Takenori Yamamoto
+&copy; 2019-2024 Takenori Yamamoto
