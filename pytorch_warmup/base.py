@@ -170,7 +170,7 @@ class LinearWarmup(BaseWarmup):
         >>>     with warmup_scheduler.dampening():
         >>>         lr_scheduler.step()
 
-    Note:
+    Warning:
         The warmup schedule must not be initialized before the initialization of the learning rate schedule.
     """
 
@@ -218,7 +218,7 @@ class ExponentialWarmup(BaseWarmup):
         >>>     with warmup_scheduler.dampening():
         >>>         lr_scheduler.step()
 
-    Note:
+    Warning:
         The warmup schedule must not be initialized before the initialization of the learning rate schedule.
     """
 
