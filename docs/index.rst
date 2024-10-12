@@ -80,7 +80,9 @@ together with :class:`Adam` or its variant (:class:`AdamW`, :class:`NAdam`, etc.
          with warmup_scheduler.dampening():
                lr_scheduler.step()
 
-Note that the warmup schedule must not be initialized before the initialization of the learning rate schedule.
+.. warning::
+   Note that the warmup schedule must not be initialized before the initialization of the learning rate schedule.
+
 Other approaches can be found in `README <https://github.com/Tony-Y/pytorch_warmup?tab=readme-ov-file#usage>`_.
 
 .. toctree::

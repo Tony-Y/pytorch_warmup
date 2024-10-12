@@ -41,6 +41,7 @@ The scheduled learning rate is dampened by the multiplication of the warmup fact
 <p align="center"><img src="https://github.com/Tony-Y/pytorch_warmup/raw/master/examples/emnist/figs/learning_rate.png" alt="Learning rate" width="400"/></p>
 
 #### Approach 1
+
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Tony-Y/colab-notebooks/blob/master/PyTorch_Warmup_Approach1_chaining.ipynb)
 
 When the learning rate schedule uses the global iteration number, the untuned linear warmup can be used
@@ -66,9 +67,12 @@ for epoch in range(1,num_epochs+1):
         with warmup_scheduler.dampening():
             lr_scheduler.step()
 ```
-Note that the warmup schedule must not be initialized before the initialization of the learning rate schedule.
+
+> [!Warning]
+> Note that the warmup schedule must not be initialized before the initialization of the learning rate schedule.
 
 If you want to use the learning rate schedule *chaining*, which is supported for PyTorch 1.4 or above, you may simply write a code of learning rate schedulers as a suite of the `with` statement:
+
 ```python
 lr_scheduler1 = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.9)
 lr_scheduler2 = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=0.1)
@@ -83,6 +87,7 @@ for epoch in range(1,num_epochs+1):
 ```
 
 If you want to start the learning rate schedule after the end of the linear warmup, delay it by the warmup period:
+
 ```python
 warmup_period = 2000
 num_steps = len(dataloader) * num_epochs - warmup_period
@@ -98,6 +103,7 @@ for epoch in range(1,num_epochs+1):
 ```
 
 #### Approach 2
+
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Tony-Y/colab-notebooks/blob/master/PyTorch_Warmup_Approach2_chaining.ipynb)
 
 When the learning rate schedule uses the epoch number, the warmup schedule can be used as follows:
@@ -133,6 +139,7 @@ for epoch in range(1,num_epochs+1):
 ```
 
 #### Approach 3
+
 When you use `CosineAnnealingWarmRestarts`, the warmup schedule can be used as follows:
 
 ```python
@@ -215,7 +222,6 @@ optimizer = apex.optimizers.FusedAdam(params, lr=0.001, betas=(0.9, 0.999), weig
 lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=num_steps)
 warmup_scheduler = warmup.UntunedLinearWarmup(optimizer)
 ```
-
 
 ## License
 
