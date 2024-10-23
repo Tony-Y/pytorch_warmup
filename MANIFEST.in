@@ -1,7 +1,15 @@
 include test/__init__.py
 include examples/plots/README.md
-include examples/plots/*.py
+include examples/plots/effective_warmup_period.py
+include examples/plots/warmup_schedule.py
 include examples/plots/figs/*.png
 include examples/emnist/README.md
-include examples/emnist/*.py
+include examples/emnist/download.py
+include examples/emnist/main.py
+include examples/emnist/plot.py
 include examples/emnist/figs/*.png
+include examples/cifar10/README.md
+include examples/cifar10/download.py
+include examples/cifar10/main.py
+include examples/cifar10/plot.py
+include examples/cifar10/figs/*.png
