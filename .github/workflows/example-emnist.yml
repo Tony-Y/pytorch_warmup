@@ -48,4 +48,4 @@ jobs:
     - name: Download EMNIST dataset
       run: python examples/emnist/download.py
     - name: Train a model on EMNIST dataset
-      run: python examples/emnist/main.py --epochs 1
+      run: python examples/emnist/main.py --epochs 1 --no-gpu
