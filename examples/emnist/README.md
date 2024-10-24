@@ -38,7 +38,7 @@ Run the Python script `main.py` to train a CNN model on the EMNIST dataset using
 > Use `--workers` option to set the number of dataloader workers
 > for a better performance in a GPU training.
 > The optimal number depends on your environment.
-> For example, 2 and 4 for a MPS and CUDA device, respectively,
+> For example, 2 and 4 for an MPS and CUDA device, respectively,
 > but it should not be more than the number of available performance cores.
 > Note that the initial epoch takes more time than a later epoch if the number of workers is greater than 0.
 
