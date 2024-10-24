@@ -92,6 +92,19 @@ def gpu_device():
         return torch.device('cpu')
 
 
+def dataloader_options(device, workers):
+    if device.type == 'cpu':
+        return {}
+
+    kwargs = dict(num_workers=workers, pin_memory=True)
+    if workers > 0:
+        if device.type == 'mps':
+            kwargs.update(dict(multiprocessing_context="forkserver", persistent_workers=True))
+        else:
+            kwargs.update(dict(persistent_workers=True))
+    return kwargs
+
+
 def warmup_schedule(optimizer, name):
     if name == 'linear':
         return warmup.UntunedLinearWarmup(optimizer)
@@ -142,12 +155,7 @@ def main(args=None):
 
     torch.manual_seed(args.seed)
 
-    kwargs = {} if device.type == 'cpu' else dict(num_workers=args.workers, pin_memory=True)
-    if args.workers > 0:
-        if device.type == 'mps':
-            kwargs.update(dict(multiprocessing_context="forkserver", persistent_workers=True))
-        else:
-            kwargs.update(dict(persistent_workers=True))
+    kwargs = dataloader_options(device, args.workers)
     train_loader = torch.utils.data.DataLoader(
         datasets.EMNIST('data', 'balanced', train=True, download=True,
                         transform=transforms.Compose([

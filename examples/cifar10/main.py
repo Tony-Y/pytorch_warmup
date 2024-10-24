@@ -104,6 +104,19 @@ def gpu_device():
         return torch.device('cpu')
 
 
+def dataloader_options(device, workers):
+    if device.type == 'cpu':
+        return {}
+
+    kwargs = dict(num_workers=workers, pin_memory=True)
+    if workers > 0:
+        if device.type == 'mps':
+            kwargs.update(dict(multiprocessing_context="forkserver", persistent_workers=True))
+        else:
+            kwargs.update(dict(persistent_workers=True))
+    return kwargs
+
+
 def optimization_algorithm(args, model):
     name = args.algorithm
     kwargs = dict(lr=args.lr, weight_decay=args.weight_decay)
@@ -206,12 +219,7 @@ def main(args=None):
 
     normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                      std=[0.229, 0.224, 0.225])
-    kwargs = {} if device.type == 'cpu' else dict(num_workers=args.workers, pin_memory=True)
-    if args.workers > 0:
-        if device.type == 'mps':
-            kwargs.update(dict(multiprocessing_context="forkserver", persistent_workers=True))
-        else:
-            kwargs.update(dict(persistent_workers=True))
+    kwargs = dataloader_options(device, args.workers)
     train_loader = torch.utils.data.DataLoader(
         datasets.CIFAR10(
             'data', train=True, download=True,
