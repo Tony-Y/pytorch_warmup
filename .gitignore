@@ -125,5 +125,6 @@ dmypy.json
 .pyre/
 
 # Example data
-examples/*/.data
-examples/*/best_model
+examples/*/data
+examples/*/output*
+examples/cifar10/resnet.py

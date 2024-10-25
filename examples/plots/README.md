@@ -5,7 +5,7 @@ Requirements: `pytorch_warmup` and `matplotlib`.
 ## Effective Warmup Period
 
 <p align="center">
-  <img src="https://github.com/Tony-Y/pytorch_warmup/raw/master/examples/plots/figs/warmup_period.png" alt="Warmup period" width="400"/></br>
+  <img src="figs/warmup_period.png" alt="Warmup period" width="400"/></br>
   <i>Effective warmup periods of RAdam and rule-of-thumb warmup schedules, as a function of &beta;&#8322;.</i>
 </p>
 
@@ -31,7 +31,7 @@ options:
 ## Warmup Schedule
 
 <p align="center">
-  <img src="https://github.com/Tony-Y/pytorch_warmup/raw/master/examples/plots/figs/warmup_schedule.png" alt="Warmup schedule" width="400"/></br>
+  <img src="figs/warmup_schedule.png" alt="Warmup schedule" width="400"/></br>
   <i>RAdam and rule-of-thumb warmup schedules over time for &beta;&#8322; = 0.999.</i>
 </p>
 
