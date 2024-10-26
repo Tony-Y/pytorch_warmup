@@ -25,6 +25,8 @@ pip install -U pytorch_warmup
 
 ## Examples
 
+* [CIFAR10](https://github.com/Tony-Y/pytorch_warmup/tree/master/examples/cifar10) -
+ A sample script to train a ResNet20 model on the CIFAR10 dataset using an optimization algorithm with a warmup.
 * [EMNIST](https://github.com/Tony-Y/pytorch_warmup/tree/master/examples/emnist) -
  A sample script to train a CNN model on the EMNIST dataset using the Adam algorithm with a warmup.
 * [Plots](https://github.com/Tony-Y/pytorch_warmup/tree/master/examples/plots) -

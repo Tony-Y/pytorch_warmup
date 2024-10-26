@@ -46,7 +46,10 @@ Examples
 .. image:: https://colab.research.google.com/assets/colab-badge.svg
    :alt: Open In Colab
    :target: https://colab.research.google.com/github/Tony-Y/colab-notebooks/blob/master/PyTorch_Warmup_Approach1_chaining.ipynb
-   
+
+* `CIFAR10 <https://github.com/Tony-Y/pytorch_warmup/tree/master/examples/cifar10>`_ -
+  A sample script to train a ResNet20 model on the CIFAR10 dataset using an optimization algorithm with a warmup.
+
 * `EMNIST <https://github.com/Tony-Y/pytorch_warmup/tree/master/examples/emnist>`_ -
   A sample script to train a CNN model on the EMNIST dataset using the Adam algorithm with a warmup.
 
