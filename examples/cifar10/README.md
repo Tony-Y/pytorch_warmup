@@ -328,4 +328,39 @@ The exponential decay rates of Adam variants are set as $\beta_{1} = 0.9$ and $\
 | Expo-5k    | `8.60 ± 0.19`  | `8.63 ± 0.23` |
 | Linear-10k | `8.53 ± 0.09`  | `8.43 ± 0.14` |
 
+## ResNet Performance Comparison for the SGD Algorithm
+
+We employ the ResNet20, ResNet32, ResNet44, ResNet56, and ResNet110 architecture for comparison.
+The SGD with momentum is used as the optimization algorithm.
+The momentum factor is set to $0.9$.
+The learning rate is $10^{-1}$.
+We employ a linear warmup schedule to improve the top-1 score.
+The warmup period is set to 1,000.
+PyTorch 2.4.0 is used for model training of this performance comparison.
+5 random seeds are used for sampling top-1 scores.
+The other implementation details are described in Supplemental Information above.
+
+<p align="center">
+  <img src="figs/fig-resnet-sgd-scores-best.png" alt="Top-1 Error" width="400"/></br>
+  <i>The best top-1 errors of ResNet models trained by the SGD algorithm without warmup or with the Linear-1k warmup.</i>
+</p>
+
+<p align="center">
+  <img src="figs/fig-resnet-sgd-scores-mean-std.png" alt="Top-1 Error" width="400"/></br>
+  <i>Top-1 errors of ResNet models trained by the SGD algorithm without warmup or with the Linear-1k warmup.
+    This bar chart presents the mean values. The error bar indicates the standard deviation.</i>
+</p>
+
+### SGD with Momentum
+
+The top-1 errors are shown as mean ± std.
+
+| Architecture | No Warmup     | Linear-1k Warmup |
+| ------------ | -------------:| ----------------:|
+| ResNet20     | `8.11 ± 0.16` | `8.06 ± 0.21`    |
+| ResNet32     | `7.93 ± 0.62` | `7.27 ± 0.21`    |
+| ResNet44     | `7.47 ± 0.50` | `6.99 ± 0.19`    |
+| ResNet56     | `7.53 ± 1.01` | `6.80 ± 0.12`    |
+| ResNet110    | `7.76 ± 0.69` | `6.28 ± 0.10`    |
+
 &copy; 2024 Takenori Yamamoto
