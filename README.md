@@ -26,15 +26,21 @@ pip install -U pytorch_warmup
 ## Examples
 
 * [CIFAR10](https://github.com/Tony-Y/pytorch_warmup/tree/master/examples/cifar10) -
- A sample script to train a ResNet20 model on the CIFAR10 dataset using an optimization algorithm with a warmup.
+ A sample script to train a ResNet model on the CIFAR10 dataset using an optimization algorithm with a warmup schedule.
+ Its README presents ResNet20 results obtained using each of AdamW, NAdamW, AMSGradW, and AdaMax
+ together with each of various warmup schedules.
+ In addition, there is a ResNet performance comparison (up to ResNet110) obtained using the SGD algorithm
+ with a linear warmup schedule.
 * [EMNIST](https://github.com/Tony-Y/pytorch_warmup/tree/master/examples/emnist) -
- A sample script to train a CNN model on the EMNIST dataset using the Adam algorithm with a warmup.
+ A sample script to train a CNN model on the EMNIST dataset using the AdamW algorithm with a warmup schedule.
+ Its README presents a result obtained using the AdamW algorithm with each of the untuned linear and exponential warmup,
+ and the RAdam warmup.
 * [Plots](https://github.com/Tony-Y/pytorch_warmup/tree/master/examples/plots) -
  A script to plot effective warmup periods as a function of &beta;&#8322;, and warmup schedules over time.
 
 ## Usage
 
-The [Documentation](https://tony-y.github.io/pytorch_warmup/) provides more detailed information on this library, unseen below. 
+The [documentation](https://tony-y.github.io/pytorch_warmup/) provides more detailed information on this library, unseen below. 
 
 ### Sample Codes
 
@@ -165,7 +171,7 @@ for epoch in range(epochs+warmup_epochs):
 
 #### Manual Warmup
 
-The warmup factor `w(t)` depends on the warmup period, which must manually be specified, for `LinearWarmup` and `ExponentialWarmup`.
+In `LinearWarmup` and `ExponentialWarmup`, the warmup factor `w(t)` depends on the warmup period that must manually be specified.
 
 ##### Linear
 
@@ -175,6 +181,8 @@ The warmup factor `w(t)` depends on the warmup period, which must manually be sp
 warmup_scheduler = warmup.LinearWarmup(optimizer, warmup_period=2000)
 ```
 
+For details please refer to [LinearWarmup](https://tony-y.github.io/pytorch_warmup/manual_warmup.html#pytorch_warmup.base.LinearWarmup) in the documentation.
+
 ##### Exponential
 
 `w(t) = 1 - exp(-t / warmup_period)`
@@ -183,9 +191,11 @@ warmup_scheduler = warmup.LinearWarmup(optimizer, warmup_period=2000)
 warmup_scheduler = warmup.ExponentialWarmup(optimizer, warmup_period=1000)
 ```
 
+For details please refer to [ExponentialWarmup](https://tony-y.github.io/pytorch_warmup/manual_warmup.html#pytorch_warmup.base.ExponentialWarmup) in the documentation.
+
 #### Untuned Warmup
 
-The warmup period is determined by a function of Adam's `beta2` parameter for `UntunedLinearWarmup` and `UntunedExponentialWarmup`.
+In `UntunedLinearWarmup` and `UntunedExponentialWarmup`, the warmup period is determined by a function of Adam's `beta2` parameter.
 
 ##### Linear
 
@@ -195,6 +205,8 @@ The warmup period is determined by a function of Adam's `beta2` parameter for `U
 warmup_scheduler = warmup.UntunedLinearWarmup(optimizer)
 ```
 
+For details please refer to [UntunedLinearWarmup](https://tony-y.github.io/pytorch_warmup/untuned_warmup.html#pytorch_warmup.untuned.UntunedLinearWarmup) in the documentation.
+
 ##### Exponential
 
 `warmup_period = 1 / (1 - beta2)`
@@ -203,15 +215,18 @@ warmup_scheduler = warmup.UntunedLinearWarmup(optimizer)
 warmup_scheduler = warmup.UntunedExponentialWarmup(optimizer)
 ```
 
+For details please refer to [UntunedExponentialWarmup](https://tony-y.github.io/pytorch_warmup/untuned_warmup.html#pytorch_warmup.untuned.UntunedExponentialWarmup) in the documentation.
+
 #### RAdam Warmup
 
-The warmup factor depends on Adam's `beta2` parameter for `RAdamWarmup`. For details please refer to the
-[Documentation](https://tony-y.github.io/pytorch_warmup/radam_warmup.html) or
-"[On the Variance of the Adaptive Learning Rate and Beyond](https://arxiv.org/abs/1908.03265)."
+In `RAdamWarmup`, the warmup factor `w(t)` is a complicated function depending on Adam's `beta2` parameter.
 
 ```python
 warmup_scheduler = warmup.RAdamWarmup(optimizer)
 ```
+
+For details please refer to [RAdamWarmup](https://tony-y.github.io/pytorch_warmup/radam_warmup.html#pytorch_warmup.radam.RAdamWarmup) in the documentation, or
+"[On the Variance of the Adaptive Learning Rate and Beyond](https://arxiv.org/abs/1908.03265)."
 
 ### Apex's Adam
 
