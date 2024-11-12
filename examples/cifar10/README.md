@@ -328,7 +328,7 @@ The exponential decay rates of Adam variants are set as $\beta_{1} = 0.9$ and $\
 | Expo-5k    | `8.60 ± 0.19`  | `8.63 ± 0.23` |
 | Linear-10k | `8.53 ± 0.09`  | `8.43 ± 0.14` |
 
-## ResNet Performance Comparison for the SGD Algorithm
+## ResNet Performance Comparison
 
 We employ the ResNet20, ResNet32, ResNet44, ResNet56, and ResNet110 architecture for comparison.
 The SGD with momentum is used as the optimization algorithm.
@@ -351,7 +351,7 @@ The other implementation details are described in Supplemental Information above
     This bar chart presents the mean values. The error bar indicates the standard deviation.</i>
 </p>
 
-### SGD with Momentum
+### SGD
 
 The top-1 errors are shown as mean ± std.
 
