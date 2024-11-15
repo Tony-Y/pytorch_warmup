@@ -11,7 +11,7 @@ class UntunedLinearWarmup(LinearWarmup):
     The untuned linear warmup schedule uses the warmup factor
 
         .. math::
-            \\omega_{t}^{\\rm linear, untuned} = \\min \\{ 1, \\frac{1 - \\beta_{2}}{2} \\cdot t \\}
+            \\omega_{t}^{\\rm linear, untuned} = \\min \\left\\{ 1, \\frac{1 - \\beta_{2}}{2} \\cdot t \\right\\}
 
     at each iteration :math:`t`, where :math:`\\beta_{2}` is the second discount factor of Adam.
     In practice, :math:`\\omega_{t}^{\\rm linear, untuned}` is calculated as
