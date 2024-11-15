@@ -149,7 +149,7 @@ class LinearWarmup(BaseWarmup):
     The linear warmup schedule uses the warmup factor
 
         .. math::
-            \\omega_{t}^{\\rm linear, \\tau} = \\min \\{ 1, \\frac{1}{\\tau} \\cdot t \\}
+            \\omega_{t}^{\\rm linear, \\tau} = \\min \\left\\{ 1, \\frac{1}{\\tau} \\cdot t \\right\\}
 
     at each iteration :math:`t`, where :math:`\\tau` is the warmup period.
 
