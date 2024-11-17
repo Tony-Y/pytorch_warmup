@@ -27,6 +27,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -34,6 +36,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+          pip install 'numpy<2' -U
           pip install torch --index-url https://download.pytorch.org/whl/cpu
           pip install sphinx sphinxcontrib-katex sphinx-copybutton sphinx-multiversion sphinx-rtd-theme
       - name: Sphinx Build
