@@ -41,6 +41,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinxcontrib.katex',
     'sphinx_copybutton',
+    'sphinx_multiversion',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -67,3 +68,8 @@ html_theme = 'sphinx_rtd_theme'
 # Copybutton settings
 copybutton_prompt_text = r">>> |\.\.\. |\$ "
 copybutton_prompt_is_regexp = True
+
+# Multiversion settings
+smv_tag_whitelist = r'^v(?!0\.1\.0)\d+\.\d+\.\d+$'
+if "SMV_BRANCH_WHITELIST" in os.environ:
+    smv_branch_whitelist = os.environ["SMV_BRANCH_WHITELIST"]

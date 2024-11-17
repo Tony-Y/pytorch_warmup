@@ -181,7 +181,7 @@ In `LinearWarmup` and `ExponentialWarmup`, the warmup factor `w(t)` depends on t
 warmup_scheduler = warmup.LinearWarmup(optimizer, warmup_period=2000)
 ```
 
-For details please refer to [LinearWarmup](https://tony-y.github.io/pytorch_warmup/manual_warmup.html#pytorch_warmup.base.LinearWarmup) in the documentation.
+For details please refer to [LinearWarmup](https://tony-y.github.io/pytorch_warmup/master/manual_warmup.html#pytorch_warmup.base.LinearWarmup) in the documentation.
 
 ##### Exponential
 
@@ -191,7 +191,7 @@ For details please refer to [LinearWarmup](https://tony-y.github.io/pytorch_warm
 warmup_scheduler = warmup.ExponentialWarmup(optimizer, warmup_period=1000)
 ```
 
-For details please refer to [ExponentialWarmup](https://tony-y.github.io/pytorch_warmup/manual_warmup.html#pytorch_warmup.base.ExponentialWarmup) in the documentation.
+For details please refer to [ExponentialWarmup](https://tony-y.github.io/pytorch_warmup/master/manual_warmup.html#pytorch_warmup.base.ExponentialWarmup) in the documentation.
 
 #### Untuned Warmup
 
@@ -205,7 +205,7 @@ In `UntunedLinearWarmup` and `UntunedExponentialWarmup`, the warmup period is de
 warmup_scheduler = warmup.UntunedLinearWarmup(optimizer)
 ```
 
-For details please refer to [UntunedLinearWarmup](https://tony-y.github.io/pytorch_warmup/untuned_warmup.html#pytorch_warmup.untuned.UntunedLinearWarmup) in the documentation.
+For details please refer to [UntunedLinearWarmup](https://tony-y.github.io/pytorch_warmup/master/untuned_warmup.html#pytorch_warmup.untuned.UntunedLinearWarmup) in the documentation.
 
 ##### Exponential
 
@@ -215,7 +215,7 @@ For details please refer to [UntunedLinearWarmup](https://tony-y.github.io/pytor
 warmup_scheduler = warmup.UntunedExponentialWarmup(optimizer)
 ```
 
-For details please refer to [UntunedExponentialWarmup](https://tony-y.github.io/pytorch_warmup/untuned_warmup.html#pytorch_warmup.untuned.UntunedExponentialWarmup) in the documentation.
+For details please refer to [UntunedExponentialWarmup](https://tony-y.github.io/pytorch_warmup/master/untuned_warmup.html#pytorch_warmup.untuned.UntunedExponentialWarmup) in the documentation.
 
 #### RAdam Warmup
 
@@ -225,7 +225,7 @@ In `RAdamWarmup`, the warmup factor `w(t)` is a complicated function depending o
 warmup_scheduler = warmup.RAdamWarmup(optimizer)
 ```
 
-For details please refer to [RAdamWarmup](https://tony-y.github.io/pytorch_warmup/radam_warmup.html#pytorch_warmup.radam.RAdamWarmup) in the documentation, or
+For details please refer to [RAdamWarmup](https://tony-y.github.io/pytorch_warmup/master/radam_warmup.html#pytorch_warmup.radam.RAdamWarmup) in the documentation, or
 "[On the Variance of the Adaptive Learning Rate and Beyond](https://arxiv.org/abs/1908.03265)."
 
 ### Apex's Adam
