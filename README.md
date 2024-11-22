@@ -2,11 +2,11 @@
 
 This library contains PyTorch implementations of the warmup schedules described in [On the adequacy of untuned warmup for adaptive optimization](https://arxiv.org/abs/1910.04209).
 
-<p align="center"><img src="https://github.com/Tony-Y/pytorch_warmup/raw/master/examples/plots/figs/warmup_schedule.png" alt="Warmup schedule" width="400"/></p>
+<p align="center"><img src="https://github.com/Tony-Y/pytorch_warmup/raw/v0.2.0/examples/plots/figs/warmup_schedule.png" alt="Warmup schedule" width="400"/></p>
 
 [![Python package](https://github.com/Tony-Y/pytorch_warmup/workflows/Python%20package/badge.svg)](https://github.com/Tony-Y/pytorch_warmup/)
 [![PyPI version shields.io](https://img.shields.io/pypi/v/pytorch-warmup.svg)](https://pypi.python.org/pypi/pytorch-warmup/)
-[![PyPI license](https://img.shields.io/pypi/l/pytorch-warmup.svg)](https://github.com/Tony-Y/pytorch_warmup/blob/master/LICENSE)
+[![PyPI license](https://img.shields.io/pypi/l/pytorch-warmup.svg)](https://github.com/Tony-Y/pytorch_warmup/blob/v0.2.0/LICENSE)
 [![Python versions](https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org)
 
 ## Installation
@@ -25,28 +25,28 @@ pip install -U pytorch_warmup
 
 ## Examples
 
-* [CIFAR10](https://github.com/Tony-Y/pytorch_warmup/tree/master/examples/cifar10) -
+* [CIFAR10](https://github.com/Tony-Y/pytorch_warmup/tree/v0.2.0/examples/cifar10) -
  A sample script to train a ResNet model on the CIFAR10 dataset using an optimization algorithm with a warmup schedule.
  Its README presents ResNet20 results obtained using each of AdamW, NAdamW, AMSGradW, and AdaMax
  together with each of various warmup schedules.
  In addition, there is a ResNet performance comparison (up to ResNet110) obtained using the SGD algorithm
  with a linear warmup schedule.
-* [EMNIST](https://github.com/Tony-Y/pytorch_warmup/tree/master/examples/emnist) -
+* [EMNIST](https://github.com/Tony-Y/pytorch_warmup/tree/v0.2.0/examples/emnist) -
  A sample script to train a CNN model on the EMNIST dataset using the AdamW algorithm with a warmup schedule.
  Its README presents a result obtained using the AdamW algorithm with each of the untuned linear and exponential warmup,
  and the RAdam warmup.
-* [Plots](https://github.com/Tony-Y/pytorch_warmup/tree/master/examples/plots) -
+* [Plots](https://github.com/Tony-Y/pytorch_warmup/tree/v0.2.0/examples/plots) -
  A script to plot effective warmup periods as a function of &beta;&#8322;, and warmup schedules over time.
 
 ## Usage
 
-The [documentation](https://tony-y.github.io/pytorch_warmup/) provides more detailed information on this library, unseen below. 
+The [documentation](https://tony-y.github.io/pytorch_warmup/v0.2.0/) provides more detailed information on this library, unseen below. 
 
 ### Sample Codes
 
 The scheduled learning rate is dampened by the multiplication of the warmup factor:
 
-<p align="center"><img src="https://github.com/Tony-Y/pytorch_warmup/raw/master/examples/emnist/figs/learning_rate.png" alt="Learning rate" width="400"/></p>
+<p align="center"><img src="https://github.com/Tony-Y/pytorch_warmup/raw/v0.2.0/examples/emnist/figs/learning_rate.png" alt="Learning rate" width="400"/></p>
 
 #### Approach 1
 
@@ -181,7 +181,7 @@ In `LinearWarmup` and `ExponentialWarmup`, the warmup factor `w(t)` depends on t
 warmup_scheduler = warmup.LinearWarmup(optimizer, warmup_period=2000)
 ```
 
-For details please refer to [LinearWarmup](https://tony-y.github.io/pytorch_warmup/master/manual_warmup.html#pytorch_warmup.base.LinearWarmup) in the documentation.
+For details please refer to [LinearWarmup](https://tony-y.github.io/pytorch_warmup/v0.2.0/manual_warmup.html#pytorch_warmup.base.LinearWarmup) in the documentation.
 
 ##### Exponential
 
@@ -191,7 +191,7 @@ For details please refer to [LinearWarmup](https://tony-y.github.io/pytorch_warm
 warmup_scheduler = warmup.ExponentialWarmup(optimizer, warmup_period=1000)
 ```
 
-For details please refer to [ExponentialWarmup](https://tony-y.github.io/pytorch_warmup/master/manual_warmup.html#pytorch_warmup.base.ExponentialWarmup) in the documentation.
+For details please refer to [ExponentialWarmup](https://tony-y.github.io/pytorch_warmup/v0.2.0/manual_warmup.html#pytorch_warmup.base.ExponentialWarmup) in the documentation.
 
 #### Untuned Warmup
 
@@ -205,7 +205,7 @@ In `UntunedLinearWarmup` and `UntunedExponentialWarmup`, the warmup period is de
 warmup_scheduler = warmup.UntunedLinearWarmup(optimizer)
 ```
 
-For details please refer to [UntunedLinearWarmup](https://tony-y.github.io/pytorch_warmup/master/untuned_warmup.html#pytorch_warmup.untuned.UntunedLinearWarmup) in the documentation.
+For details please refer to [UntunedLinearWarmup](https://tony-y.github.io/pytorch_warmup/v0.2.0/untuned_warmup.html#pytorch_warmup.untuned.UntunedLinearWarmup) in the documentation.
 
 ##### Exponential
 
@@ -215,7 +215,7 @@ For details please refer to [UntunedLinearWarmup](https://tony-y.github.io/pytor
 warmup_scheduler = warmup.UntunedExponentialWarmup(optimizer)
 ```
 
-For details please refer to [UntunedExponentialWarmup](https://tony-y.github.io/pytorch_warmup/master/untuned_warmup.html#pytorch_warmup.untuned.UntunedExponentialWarmup) in the documentation.
+For details please refer to [UntunedExponentialWarmup](https://tony-y.github.io/pytorch_warmup/v0.2.0/untuned_warmup.html#pytorch_warmup.untuned.UntunedExponentialWarmup) in the documentation.
 
 #### RAdam Warmup
 
@@ -225,7 +225,7 @@ In `RAdamWarmup`, the warmup factor `w(t)` is a complicated function depending o
 warmup_scheduler = warmup.RAdamWarmup(optimizer)
 ```
 
-For details please refer to [RAdamWarmup](https://tony-y.github.io/pytorch_warmup/master/radam_warmup.html#pytorch_warmup.radam.RAdamWarmup) in the documentation, or
+For details please refer to [RAdamWarmup](https://tony-y.github.io/pytorch_warmup/v0.2.0/radam_warmup.html#pytorch_warmup.radam.RAdamWarmup) in the documentation, or
 "[On the Variance of the Adaptive Learning Rate and Beyond](https://arxiv.org/abs/1908.03265)."
 
 ### Apex's Adam

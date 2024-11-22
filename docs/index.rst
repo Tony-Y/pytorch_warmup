@@ -10,7 +10,7 @@ This library contains PyTorch implementations of the warmup schedules described 
 `On the adequacy of untuned warmup for adaptive optimization
 <https://arxiv.org/abs/1910.04209>`_.
 
-.. image:: https://github.com/Tony-Y/pytorch_warmup/raw/master/examples/plots/figs/warmup_schedule.png
+.. image:: https://github.com/Tony-Y/pytorch_warmup/raw/v0.2.0/examples/plots/figs/warmup_schedule.png
    :alt: Warmup schedule
    :width: 400
    :align: center
@@ -25,7 +25,7 @@ This library contains PyTorch implementations of the warmup schedules described 
 
 .. image:: https://img.shields.io/pypi/l/pytorch-warmup.svg
    :alt: PyPI license
-   :target: https://github.com/Tony-Y/pytorch_warmup/blob/master/LICENSE
+   :target: https://github.com/Tony-Y/pytorch_warmup/blob/v0.2.0/LICENSE
 
 .. image:: https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue
    :alt: Python versions
@@ -47,19 +47,19 @@ Examples
    :alt: Open In Colab
    :target: https://colab.research.google.com/github/Tony-Y/colab-notebooks/blob/master/PyTorch_Warmup_Approach1_chaining.ipynb
 
-* `CIFAR10 <https://github.com/Tony-Y/pytorch_warmup/tree/master/examples/cifar10>`_ -
+* `CIFAR10 <https://github.com/Tony-Y/pytorch_warmup/tree/v0.2.0/examples/cifar10>`_ -
   A sample script to train a ResNet model on the CIFAR10 dataset using an optimization algorithm with a warmup schedule.
   Its README presents ResNet20 results obtained using each of AdamW, NAdamW, AMSGradW, and AdaMax
   together with each of various warmup schedules.
   In addition, there is a ResNet performance comparison (up to ResNet110) obtained using the SGD algorithm
   with a linear warmup schedule.
 
-* `EMNIST <https://github.com/Tony-Y/pytorch_warmup/tree/master/examples/emnist>`_ -
+* `EMNIST <https://github.com/Tony-Y/pytorch_warmup/tree/v0.2.0/examples/emnist>`_ -
   A sample script to train a CNN model on the EMNIST dataset using the AdamW algorithm with a warmup schedule.
   Its README presents a result obtained using the AdamW algorithm with each of the untuned linear and exponential warmup,
   and the RAdam warmup.
 
-* `Plots <https://github.com/Tony-Y/pytorch_warmup/tree/master/examples/plots>`_ -
+* `Plots <https://github.com/Tony-Y/pytorch_warmup/tree/v0.2.0/examples/plots>`_ -
   A script to plot effective warmup periods as a function of :math:`\beta_{2}`, and warmup schedules over time.
 
 Usage
@@ -92,7 +92,7 @@ together with :class:`Adam` or its variant (:class:`AdamW`, :class:`NAdam`, etc.
 .. warning::
    Note that the warmup schedule must not be initialized before the initialization of the learning rate schedule.
 
-Other approaches can be found in `README <https://github.com/Tony-Y/pytorch_warmup?tab=readme-ov-file#usage>`_.
+Other approaches can be found in `README <https://github.com/Tony-Y/pytorch_warmup/tree/v0.2.0?tab=readme-ov-file#usage>`_.
 
 .. toctree::
    :maxdepth: 2
