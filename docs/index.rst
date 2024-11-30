@@ -27,14 +27,14 @@ This library contains PyTorch implementations of the warmup schedules described 
    :alt: PyPI license
    :target: https://github.com/Tony-Y/pytorch_warmup/blob/master/LICENSE
 
-.. image:: https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue
+.. image:: https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue
    :alt: Python versions
    :target: https://www.python.org
 
 Installation
 ------------
 
-Make sure you have Python 3.7+ and PyTorch 1.1+ or 2.x. Then, install the latest version from the Python Package Index:
+Make sure you have Python 3.9+ and PyTorch 1.9+ or 2.x. Then, install the latest version from the Python Package Index:
 
 .. code-block:: shell
 
@@ -92,7 +92,7 @@ together with :class:`Adam` or its variant (:class:`AdamW`, :class:`NAdam`, etc.
 .. warning::
    Note that the warmup schedule must not be initialized before the initialization of the learning rate schedule.
 
-Other approaches can be found in `README <https://github.com/Tony-Y/pytorch_warmup?tab=readme-ov-file#usage>`_.
+Other approaches can be found in `README <https://github.com/Tony-Y/pytorch_warmup/tree/master?tab=readme-ov-file#usage>`_.
 
 .. toctree::
    :maxdepth: 2

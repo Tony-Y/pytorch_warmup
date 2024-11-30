@@ -7,11 +7,11 @@ This library contains PyTorch implementations of the warmup schedules described 
 [![Python package](https://github.com/Tony-Y/pytorch_warmup/workflows/Python%20package/badge.svg)](https://github.com/Tony-Y/pytorch_warmup/)
 [![PyPI version shields.io](https://img.shields.io/pypi/v/pytorch-warmup.svg)](https://pypi.python.org/pypi/pytorch-warmup/)
 [![PyPI license](https://img.shields.io/pypi/l/pytorch-warmup.svg)](https://github.com/Tony-Y/pytorch_warmup/blob/master/LICENSE)
-[![Python versions](https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org)
+[![Python versions](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org)
 
 ## Installation
 
-Make sure you have Python 3.7+ and PyTorch 1.1+ or 2.x. Then, run the following command in the project directory:
+Make sure you have Python 3.9+ and PyTorch 1.9+ or 2.x. Then, run the following command in the project directory:
 
 ```shell
 python -m pip install .
@@ -40,7 +40,7 @@ pip install -U pytorch_warmup
 
 ## Usage
 
-The [documentation](https://tony-y.github.io/pytorch_warmup/) provides more detailed information on this library, unseen below. 
+The [documentation](https://tony-y.github.io/pytorch_warmup/master/) provides more detailed information on this library, unseen below. 
 
 ### Sample Codes
 

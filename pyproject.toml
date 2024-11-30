@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "pytorch-warmup"
+description = "A PyTorch Extension for Learning Rate Warmup"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    { name = "Takenori Yamamoto", email = "yamamoto.takenory@gmail.com" }
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3 :: Only",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: MIT License",
+]
+requires-python = ">=3.9"
+dependencies = ["torch>=1.9"]
+dynamic = ["version"]
+
+
+[project.urls]
+"Homepage" = "https://github.com/Tony-Y/pytorch_warmup"
+"Bug Reports" = "https://github.com/Tony-Y/pytorch_warmup/issues"
+
+
+[tool.setuptools]
+packages = ["pytorch_warmup"]
+
+
+[tool.setuptools.dynamic]
+version = { attr = "pytorch_warmup.__version__" }
