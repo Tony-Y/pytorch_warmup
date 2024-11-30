@@ -9,7 +9,7 @@ jobs:
     strategy:
       max-parallel: 8
       matrix:
-        python-version: [3.8, '3.10', 3.12]
+        python-version: [3.9, '3.10', 3.11, 3.12]
         os: [macos-latest, windows-latest, ubuntu-latest]
         include:
           - pytorch-version: 2.3.1
@@ -27,8 +27,9 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install 'numpy<2' -U
-        pip install torch==${{ matrix.pytorch-version }}${{ matrix.pytorch-option }} torchvision==${{ matrix.torchvision-version }}${{ matrix.pytorch-option }} -f https://download.pytorch.org/whl/torch_stable.html
+        pip install 'numpy<2'
+        pip install torch==${{ matrix.pytorch-version }}${{ matrix.pytorch-option }} -f https://download.pytorch.org/whl/torch
+        pip install torchvision==${{ matrix.torchvision-version }}${{ matrix.pytorch-option }} -f https://download.pytorch.org/whl/torchvision
         pip install setuptools
         pip install requests
         pip install tqdm
@@ -38,5 +39,5 @@ jobs:
       run: |
         cd examples/cifar10/
         python download.py
-    - name: Train a ResNet20 model on CIFAR dataset
+    - name: Train a ResNet20 model on CIFAR10 dataset
       run: python examples/cifar10/main.py --epochs 1 --no-progress --no-gpu
