@@ -9,7 +9,7 @@ def _check_optimizer(optimizer):
             optimizer, type(optimizer).__name__))
 
 
-class BaseWarmup(object):
+class BaseWarmup:
     """Base class for all warmup schedules.
 
     The learning rate :math:`\\alpha_{t}` is dampened by multiplying it by
@@ -178,7 +178,7 @@ class LinearWarmup(BaseWarmup):
         _check_optimizer(optimizer)
         group_count = len(optimizer.param_groups)
         warmup_params = get_warmup_params(warmup_period, group_count)
-        super(LinearWarmup, self).__init__(optimizer, warmup_params, last_step)
+        super().__init__(optimizer, warmup_params, last_step)
 
     def warmup_factor(self, step, warmup_period):
         """Returns the warmup factor :math:`\\omega_{t}^{\\rm linear, \\tau}` at an iteration :math:`t`.
@@ -226,7 +226,7 @@ class ExponentialWarmup(BaseWarmup):
         _check_optimizer(optimizer)
         group_count = len(optimizer.param_groups)
         warmup_params = get_warmup_params(warmup_period, group_count)
-        super(ExponentialWarmup, self).__init__(optimizer, warmup_params, last_step)
+        super().__init__(optimizer, warmup_params, last_step)
 
     def warmup_factor(self, step, warmup_period):
         """Returns the warmup factor :math:`\\omega_{t}^{\\rm expo, \\tau}` at an iteration :math:`t`.

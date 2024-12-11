@@ -132,7 +132,7 @@ class RAdamWarmup(BaseWarmup):
         ]
         for x in warmup_params:
             x['offset'] = get_offset(**x)
-        super(RAdamWarmup, self).__init__(optimizer, warmup_params, last_step)
+        super().__init__(optimizer, warmup_params, last_step)
 
     def warmup_factor(self, step, beta2, rho_inf, offset):
         """Returns the warmup factor :math:`\\omega_{t+\\delta-1}^{\\rm RAdam}` at an iteration :math:`t`.
