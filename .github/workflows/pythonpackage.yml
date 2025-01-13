@@ -57,7 +57,7 @@ jobs:
       run: pytest test -s -vv
       env:
         WRAPPED_LR: "1"
-      if: matrix.pytorch-release == "latest"
+      if: matrix.pytorch-release == 'latest'
     - name: Package with build
       run: |
         pip install setuptools build
