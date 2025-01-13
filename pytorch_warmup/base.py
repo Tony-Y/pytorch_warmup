@@ -1,5 +1,6 @@
 import math
 from contextlib import contextmanager
+from torch import Tensor
 from torch.optim import Optimizer
 
 
@@ -7,6 +8,22 @@ def _check_optimizer(optimizer):
     if not isinstance(optimizer, Optimizer):
         raise TypeError('{} ({}) is not an Optimizer.'.format(
             optimizer, type(optimizer).__name__))
+
+
+def _get_lr(group):
+    if isinstance(group['lr'], Tensor):
+        assert group['lr'].dim() == 0
+        return group['lr'].clone().detach()
+    else:
+        return group['lr']
+
+
+def _set_lr(group, lr):
+    if isinstance(group['lr'], Tensor):
+        assert group['lr'].dim() == 0
+        group['lr'].copy_(lr)
+    else:
+        group['lr'] = lr
 
 
 class BaseWarmup:
@@ -31,7 +48,7 @@ class BaseWarmup:
         self.optimizer = optimizer
         self.warmup_params = warmup_params
         self.last_step = last_step
-        self.lrs = [group['lr'] for group in self.optimizer.param_groups]
+        self.lrs = [_get_lr(group) for group in self.optimizer.param_groups]
         self.dampen()
 
     def state_dict(self):
@@ -97,9 +114,9 @@ class BaseWarmup:
             >>>         lr_scheduler.step()
         """
         for group, lr in zip(self.optimizer.param_groups, self.lrs):
-            group['lr'] = lr
+            _set_lr(group, lr)
         yield
-        self.lrs = [group['lr'] for group in self.optimizer.param_groups]
+        self.lrs = [_get_lr(group) for group in self.optimizer.param_groups]
         self.dampen()
 
     def warmup_factor(self, step, **params):

@@ -3,7 +3,7 @@ import math
 import torch
 import pytorch_warmup as warmup
 
-from .test_base import _test_state_dict
+from .test_base import _test_state_dict, _set_lr, _get_lr
 
 
 def _test_optimizer(self, warmup_class):
@@ -22,12 +22,13 @@ class TestUntuned(unittest.TestCase):
         p2 = torch.nn.Parameter(torch.arange(10, dtype=torch.float32).to(self.device))
         optimizer = torch.optim.Adam([
                 {'params': [p1]},
-                {'params': [p2], 'lr': 0.1}
-            ], lr=0.5, betas=(0.9, 0.7))
+                {'params': [p2], 'lr': _set_lr(0.1)}
+            ], lr=_set_lr(0.5), betas=(0.9, 0.7))
         lr_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda=lambda step: 1.0)
         warmup_scheduler = warmup.UntunedLinearWarmup(optimizer)
+        print()
         for step in range(1, 11):
-            lr = [x['lr'] for x in optimizer.param_groups]
+            lr = [_get_lr(x['lr']) for x in optimizer.param_groups]
             print(f'{step} {lr}')
             if step < 6:
                 self.assertAlmostEqual(lr[0], 0.5 * step / 6)
@@ -45,17 +46,18 @@ class TestUntuned(unittest.TestCase):
 
         _test_optimizer(self, warmup.UntunedLinearWarmup)
 
-    def test_untuned_exponetial(self):
+    def test_untuned_exponential(self):
         p1 = torch.nn.Parameter(torch.arange(10, dtype=torch.float32).to(self.device))
         p2 = torch.nn.Parameter(torch.arange(10, dtype=torch.float32).to(self.device))
         optimizer = torch.optim.Adam([
                 {'params': [p1]},
-                {'params': [p2], 'lr': 0.1}
-            ], lr=0.5, betas=(0.9, 0.7))
+                {'params': [p2], 'lr': _set_lr(0.1)}
+            ], lr=_set_lr(0.5), betas=(0.9, 0.7))
         lr_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda=lambda step: 1.0)
         warmup_scheduler = warmup.UntunedExponentialWarmup(optimizer)
+        print()
         for step in range(1, 11):
-            lr = [x['lr'] for x in optimizer.param_groups]
+            lr = [_get_lr(x['lr']) for x in optimizer.param_groups]
             print(f'{step} {lr}')
             self.assertAlmostEqual(lr[0], 0.5 * (1 - math.exp(-step / 3)))
             self.assertAlmostEqual(lr[1], 0.1 * (1 - math.exp(-step / 3)))
