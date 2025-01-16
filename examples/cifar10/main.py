@@ -34,6 +34,25 @@ def check_pytorch_version(algorithm):
         sys.exit('[Error] The RAdamW optimization algorithm requires PyTorch 2.3 or later.')
 
 
+def get_lr(args, optimizer):
+    lr = optimizer.param_groups[0]['lr']
+    return lr.item() if args.compile else lr
+
+
+def train_iter_loss_fn(optimizer, model, data, target):
+    optimizer.zero_grad()
+    output = model(data)
+    loss = F.cross_entropy(output, target)
+    loss.backward()
+    return loss
+
+
+def train_iter_optimizer_step_fn(optimizer, lr_scheduler, warmup_scheduler):
+    optimizer.step()
+    with warmup_scheduler.dampening():
+        lr_scheduler.step()
+
+
 def train(args, model, device, train_loader, optimizer, lr_scheduler,
           warmup_scheduler, epoch, history):
     since = time.time()
@@ -42,16 +61,10 @@ def train(args, model, device, train_loader, optimizer, lr_scheduler,
     progress.set_description(f"[train] Epoch {epoch}")
     train_loss = 0
     for batch_idx, (data, target) in enumerate(train_loader):
-        lr = optimizer.param_groups[0]['lr']
+        lr = get_lr(args, optimizer)
         data, target = data.to(device), target.to(device)
-        optimizer.zero_grad()
-        output = model(data)
-        loss = F.cross_entropy(output, target)
-        loss.backward()
-        optimizer.step()
-        with warmup_scheduler.dampening():
-            lr_scheduler.step()
-
+        loss = train_iter_loss_fn(optimizer, model, data, target)
+        train_iter_optimizer_step_fn(optimizer, lr_scheduler, warmup_scheduler)
         loss = loss.item()
         train_loss += loss
         batch_step = batch_idx + 1
@@ -70,6 +83,14 @@ def train(args, model, device, train_loader, optimizer, lr_scheduler,
           f'Ave. Loss: {train_loss:.4f}')
 
 
+def test_iter_loss_fn(model, data, target):
+    output = model(data)
+    loss = F.cross_entropy(output, target, reduction='sum')
+    pred = output.argmax(dim=1, keepdim=True)  # get the index of the max of unnormalized logits
+    correct = pred.eq(target.view_as(pred)).sum()
+    return loss, correct
+
+
 @torch.inference_mode()
 def test(args, model, device, test_loader, epoch, evaluation):
     since = time.time()
@@ -80,10 +101,9 @@ def test(args, model, device, test_loader, epoch, evaluation):
     correct = 0
     for data, target in progress:
         data, target = data.to(device), target.to(device)
-        output = model(data)
-        test_loss += F.cross_entropy(output, target, reduction='sum').item()  # sum up batch loss
-        pred = output.argmax(dim=1, keepdim=True)  # get the index of the max of unnormalized logits
-        correct += pred.eq(target.view_as(pred)).sum().item()
+        batch_loss, batch_correct = test_iter_loss_fn(model, data, target)
+        test_loss += batch_loss.item()  # sum up batch loss
+        correct += batch_correct.item()  # sum up batch correct
 
     test_loss /= len(test_loader.dataset)
     test_acc = 100. * correct / len(test_loader.dataset)
@@ -119,7 +139,8 @@ def dataloader_options(device, workers):
 
 def optimization_algorithm(args, model):
     name = args.algorithm
-    kwargs = dict(lr=args.lr, weight_decay=args.weight_decay)
+    lr = torch.tensor(args.lr) if args.compile else args.lr
+    kwargs = dict(lr=lr, weight_decay=args.weight_decay)
     if name == 'sgd':
         kwargs['momentum'] = 0.9
     else:
@@ -207,6 +228,8 @@ def main(args=None):
     parser.add_argument('--no-gpu', action='store_true', default=False,
                         help='disable GPU training. ' +
                              'As default, an MPS or CUDA device will be used if available.')
+    parser.add_argument('--compile', action='store_true', default=False,
+                        help='optimize PyTorch code using TorchDynamo, AOTAutograd, and TorchInductor')
     args = parser.parse_args(args)
 
     check_pytorch_version(args.algorithm)
@@ -263,6 +286,14 @@ def main(args=None):
     warmup_scheduler = warmup_schedule(optimizer,
                                        name=args.warmup,
                                        period=args.warmup_period)
+
+    if args.compile:
+        global train_iter_loss_fn
+        global train_iter_optimizer_step_fn
+        global test_iter_loss_fn
+        train_iter_loss_fn = torch.compile(train_iter_loss_fn, mode="reduce-overhead")
+        train_iter_optimizer_step_fn = torch.compile(train_iter_optimizer_step_fn)
+        test_iter_loss_fn = torch.compile(test_iter_loss_fn, mode="reduce-overhead")
 
     best_acc = 0.0
     best_epoch = 0

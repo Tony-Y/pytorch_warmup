@@ -229,6 +229,8 @@ options:
   --no-progress         disable progress bar
   --no-gpu              disable GPU training. As default, an MPS or
                         CUDA device will be used if available.
+  --compile             optimize PyTorch code using TorchDynamo,
+                        AOTAutograd, and TorchInductor
 ```
 
 ```
