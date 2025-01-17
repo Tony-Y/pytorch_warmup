@@ -44,11 +44,11 @@ def train_iter_loss_fn(optimizer, model, data, target):
     output = model(data)
     loss = F.cross_entropy(output, target)
     loss.backward()
+    optimizer.step()
     return loss
 
 
-def train_iter_optimizer_step_fn(optimizer, lr_scheduler, warmup_scheduler):
-    optimizer.step()
+def update_lr_fn(lr_scheduler, warmup_scheduler):
     with warmup_scheduler.dampening():
         lr_scheduler.step()
 
@@ -64,7 +64,7 @@ def train(args, model, device, train_loader, optimizer, lr_scheduler,
         lr = get_lr(args, optimizer)
         data, target = data.to(device), target.to(device)
         loss = train_iter_loss_fn(optimizer, model, data, target)
-        train_iter_optimizer_step_fn(optimizer, lr_scheduler, warmup_scheduler)
+        update_lr_fn(lr_scheduler, warmup_scheduler)
         loss = loss.item()
         train_loss += loss
         batch_step = batch_idx + 1
@@ -137,9 +137,9 @@ def dataloader_options(device, workers):
     return kwargs
 
 
-def optimization_algorithm(args, model):
+def optimization_algorithm(args, model, device):
     name = args.algorithm
-    lr = torch.tensor(args.lr) if args.compile else args.lr
+    lr = torch.tensor(args.lr).to(device) if args.compile else args.lr
     kwargs = dict(lr=lr, weight_decay=args.weight_decay)
     if name == 'sgd':
         kwargs['momentum'] = 0.9
@@ -179,6 +179,15 @@ def warmup_schedule(optimizer, name, period):
         return warmup.LinearWarmup(optimizer, 1)
     else:
         raise ValueError(f'unknown warmup schedule: {name}')
+
+
+def compile_functions():
+    global train_iter_loss_fn
+    global update_lr_fn
+    global test_iter_loss_fn
+    train_iter_loss_fn = torch.compile(train_iter_loss_fn, mode="reduce-overhead")
+    update_lr_fn = torch.compile(update_lr_fn)
+    test_iter_loss_fn = torch.compile(test_iter_loss_fn, mode="reduce-overhead")
 
 
 def main(args=None):
@@ -276,7 +285,7 @@ def main(args=None):
 
     model = resnet.__dict__[args.arch]().to(device)
 
-    optimizer = optimization_algorithm(args, model)
+    optimizer = optimization_algorithm(args, model, device)
 
     steps_per_epoch = len(train_loader)
     lr_scheduler = optim.lr_scheduler.MultiStepLR(
@@ -288,12 +297,7 @@ def main(args=None):
                                        period=args.warmup_period)
 
     if args.compile:
-        global train_iter_loss_fn
-        global train_iter_optimizer_step_fn
-        global test_iter_loss_fn
-        train_iter_loss_fn = torch.compile(train_iter_loss_fn, mode="reduce-overhead")
-        train_iter_optimizer_step_fn = torch.compile(train_iter_optimizer_step_fn)
-        test_iter_loss_fn = torch.compile(test_iter_loss_fn, mode="reduce-overhead")
+        compile_functions()
 
     best_acc = 0.0
     best_epoch = 0
