@@ -190,6 +190,15 @@ def compile_functions():
     test_iter_loss_fn = torch.compile(test_iter_loss_fn, mode="reduce-overhead")
 
 
+def init_momentum_buffer(optimizer):
+    for group in optimizer.param_groups:
+        if group["momentum"] != 0:
+            for p in group["params"]:
+                state = optimizer.state[p]
+                if state.get("momentum_buffer") is None:
+                    state["momentum_buffer"] = torch.zeros_like(p.data)
+
+
 def main(args=None):
     # Training settings
     parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Example')
@@ -297,6 +306,8 @@ def main(args=None):
                                        period=args.warmup_period)
 
     if args.compile:
+        if args.algorithm == 'sgd':
+            init_momentum_buffer(optimizer)
         compile_functions()
 
     best_acc = 0.0
