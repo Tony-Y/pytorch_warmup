@@ -240,8 +240,90 @@ lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=num_s
 warmup_scheduler = warmup.UntunedLinearWarmup(optimizer)
 ```
 
+### Compiled Optimizers
+
+[Benchmarking results](https://dev-discuss.pytorch.org/t/performance-comparison-between-torch-compile-and-apex-optimizers/2023)
+show that the complied Adam outperforms the Apex's Adam.
+
+> [!Warning]
+> PyTorch 2.3 or later is required for using the compiled optimizer with
+> a warmup scheduler and/or LR schedulers.
+> PyTorch-Warmup 0.2 or earlier is incompatible with the complied optimizer.
+
+You can compile the Adam optimizer as follows:
+
+```python
+model = model.to(device)
+optimizer = torch.optim.Adam(model.parameters(), lr=torch.tensor(0.001).to(device))
+opt_step = torch.compile(optimizer.step, mode="reduce-overhead")
+```
+
+> [!Important]
+> Wrap the learning rate in a `Tensor`, or `torch.compile` will recompile
+> as the value of the learning rate changes.
+
+Then, the compiled version `opt_step` have to be invoked instead of `optimizer.step`:
+
+```python
+for epoch in range(1,num_epochs+1):
+    for batch in dataloader:
+        optimizer.zero_grad()
+        loss = ...
+        loss.backward()
+        opt_step()
+        with warmup_scheduler.dampening():
+            lr_scheduler.step()
+```
+
+You can also compile other built-in optimizers in the way shown above.
+
+> [!Note]
+> When using the compiled SGD with momentum, its momentum buffer is needed
+> to be initialized manually. You can find sample code in the CIFAR10 exmaple.
+
+In practice, you may compile it together with other PyTorch code as follows:
+
+```python
+@torch.compile(mode="reduce-overhead")
+def train_iter_fn(batch):
+    optimizer.zero_grad()
+    loss = ...
+    loss.backward()
+    optimizer.step()
+
+for epoch in range(1,num_epochs+1):
+    for batch in dataloader:
+        train_iter_fn(batch)
+        with warmup_scheduler.dampening():
+            lr_scheduler.step()
+```
+
+`torch.compile` skips `lr_scheduler.step` even if it were invoked within `train_iter_fn`.
+Likewise, you should not compile `warmup_scheduler.dampening`.
+You may also use `torch.compiler.disable` to have `torch.compile` skip a function
+updating the learning rate as follows:
+
+```python
+@torch.compiler.disable
+def update_lr_fn():
+    with warmup_scheduler.dampening():
+        lr_scheduler.step()
+
+@torch.compile(mode="reduce-overhead")
+def train_iter_fn(batch):
+    optimizer.zero_grad()
+    loss = ...
+    loss.backward()
+    optimizer.step()
+    update_lr_fn()
+
+for epoch in range(1,num_epochs+1):
+    for batch in dataloader:
+        train_iter_fn(batch)
+```
+
 ## License
 
 MIT License
 
-&copy; 2019-2024 Takenori Yamamoto
+&copy; 2019-2025 Takenori Yamamoto

@@ -183,10 +183,8 @@ def warmup_schedule(optimizer, name, period):
 
 def compile_functions():
     global train_iter_loss_fn
-    global update_lr_fn
     global test_iter_loss_fn
     train_iter_loss_fn = torch.compile(train_iter_loss_fn, mode="reduce-overhead")
-    update_lr_fn = torch.compile(update_lr_fn)
     test_iter_loss_fn = torch.compile(test_iter_loss_fn, mode="reduce-overhead")
 
 
