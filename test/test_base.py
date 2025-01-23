@@ -1,6 +1,8 @@
 import unittest
+import os
 import math
 import torch
+from torch import Tensor
 import pytorch_warmup as warmup
 
 
@@ -42,6 +44,28 @@ def _test_get_warmup_params(self, optimizer, warmup_class):
     self.assertEqual(str(cm.exception), '5.0 (float) is not a list nor an int.')
 
 
+def _wrap(value):
+    return torch.tensor(value)
+
+
+def _unwrap(value):
+    assert isinstance(value, Tensor)
+    assert value.dim() == 0
+    return value.item()
+
+
+def _identity(value):
+    return value
+
+
+def _assert_naked(value):
+    assert not isinstance(value, Tensor)
+    return value
+
+
+_set_lr, _get_lr = (_wrap, _unwrap) if 'WRAPPED_LR' in os.environ else (_identity, _assert_naked)
+
+
 class TestBase(unittest.TestCase):
 
     def setUp(self):
@@ -52,12 +76,13 @@ class TestBase(unittest.TestCase):
         p2 = torch.nn.Parameter(torch.arange(10, dtype=torch.float32).to(self.device))
         optimizer = torch.optim.SGD([
                 {'params': [p1]},
-                {'params': [p2], 'lr': 0.1}
-            ], lr=0.5)
+                {'params': [p2], 'lr': _set_lr(0.1)}
+            ], lr=_set_lr(0.5))
         lr_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda=lambda step: 1.0)
         warmup_scheduler = warmup.LinearWarmup(optimizer, warmup_period=5)
+        print()
         for step in range(1, 11):
-            lr = [x['lr'] for x in optimizer.param_groups]
+            lr = [_get_lr(x['lr']) for x in optimizer.param_groups]
             print(f'{step} {lr}')
             if step < 5:
                 self.assertAlmostEqual(lr[0], 0.5 * step / 5)
@@ -77,17 +102,18 @@ class TestBase(unittest.TestCase):
 
         _test_get_warmup_params(self, optimizer, warmup.LinearWarmup)
 
-    def test_exponetial(self):
+    def test_exponential(self):
         p1 = torch.nn.Parameter(torch.arange(10, dtype=torch.float32).to(self.device))
         p2 = torch.nn.Parameter(torch.arange(10, dtype=torch.float32).to(self.device))
         optimizer = torch.optim.SGD([
                 {'params': [p1]},
-                {'params': [p2], 'lr': 0.1}
-            ], lr=0.5)
+                {'params': [p2], 'lr': _set_lr(0.1)}
+            ], lr=_set_lr(0.5))
         lr_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda=lambda step: 1.0)
         warmup_scheduler = warmup.ExponentialWarmup(optimizer, warmup_period=5)
+        print()
         for step in range(1, 11):
-            lr = [x['lr'] for x in optimizer.param_groups]
+            lr = [_get_lr(x['lr']) for x in optimizer.param_groups]
             print(f'{step} {lr}')
             self.assertAlmostEqual(lr[0], 0.5 * (1 - math.exp(-step / 5)))
             self.assertAlmostEqual(lr[1], 0.1 * (1 - math.exp(-step / 5)))
@@ -109,8 +135,8 @@ class TestBase(unittest.TestCase):
             p2 = torch.nn.Parameter(torch.arange(10, dtype=torch.float32).to(self.device))
             optimizer = torch.optim.SGD([
                     {'params': [p1]},
-                    {'params': [p2], 'lr': 0.1}
-                    ], lr=0.5)
+                    {'params': [p2], 'lr': _set_lr(0.1)}
+                    ], lr=_set_lr(0.5))
             lr_scheduler1 = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.9)
             lr_scheduler2 = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=0.1)
             return optimizer, lr_scheduler1, lr_scheduler2
@@ -121,7 +147,7 @@ class TestBase(unittest.TestCase):
         print()
         print('Undampened:')
         for step in range(1, 11):
-            lr = [x['lr'] for x in optimizer.param_groups]
+            lr = [_get_lr(x['lr']) for x in optimizer.param_groups]
             print(f'{step} {lr}')
             lrs.append(lr)
             optimizer.zero_grad()
@@ -133,7 +159,7 @@ class TestBase(unittest.TestCase):
         warmup_scheduler = warmup.LinearWarmup(optimizer, warmup_period=5)
         print('Dampened:')
         for step in range(1, 11):
-            lr = [x['lr'] for x in optimizer.param_groups]
+            lr = [_get_lr(x['lr']) for x in optimizer.param_groups]
             print(f'{step} {lr}')
             if step < 5:
                 self.assertAlmostEqual(lr[0], lrs[step-1][0] * step / 5)
@@ -155,11 +181,12 @@ class TestBase(unittest.TestCase):
         p2 = torch.nn.Parameter(torch.arange(10, dtype=torch.float32).to(self.device))
         optimizer = torch.optim.SGD([
                 {'params': [p1]},
-                {'params': [p2], 'lr': 0.1}
-            ], lr=0.5)
+                {'params': [p2], 'lr': _set_lr(0.1)}
+            ], lr=_set_lr(0.5))
         warmup_scheduler = warmup.LinearWarmup(optimizer, warmup_period=5)
+        print()
         for step in range(1, 11):
-            lr = [x['lr'] for x in optimizer.param_groups]
+            lr = [_get_lr(x['lr']) for x in optimizer.param_groups]
             print(f'{step} {lr}')
             if step < 5:
                 self.assertAlmostEqual(lr[0], 0.5 * step / 5)

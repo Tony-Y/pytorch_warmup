@@ -49,10 +49,15 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test with pytest
+    - name: Test with pytest (naked)
       run: |
         pip install pytest
         pytest test -s -vv
+    - name: Test with pytest (wrapped)
+      run: pytest test -s -vv
+      env:
+        WRAPPED_LR: "1"
+      if: matrix.pytorch-release == 'latest'
     - name: Package with build
       run: |
         pip install setuptools build

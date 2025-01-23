@@ -229,6 +229,8 @@ options:
   --no-progress         disable progress bar
   --no-gpu              disable GPU training. As default, an MPS or
                         CUDA device will be used if available.
+  --compile             optimize PyTorch code using TorchDynamo,
+                        AOTAutograd, and TorchInductor
 ```
 
 ```
@@ -363,4 +365,4 @@ The top-1 errors are shown as mean ± std.
 | ResNet56     | `7.53 ± 1.01` | `6.80 ± 0.12`    |
 | ResNet110    | `7.76 ± 0.69` | `6.28 ± 0.10`    |
 
-&copy; 2024 Takenori Yamamoto
+&copy; 2024-2025 Takenori Yamamoto
