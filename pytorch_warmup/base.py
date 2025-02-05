@@ -12,7 +12,6 @@ def _check_optimizer(optimizer):
 
 def _get_lr(group):
     if isinstance(group['lr'], Tensor):
-        assert group['lr'].dim() == 0
         return group['lr'].clone().detach()
     else:
         return group['lr']
@@ -20,7 +19,6 @@ def _get_lr(group):
 
 def _set_lr(group, lr):
     if isinstance(group['lr'], Tensor):
-        assert group['lr'].dim() == 0
         group['lr'].copy_(lr)
     else:
         group['lr'] = lr
