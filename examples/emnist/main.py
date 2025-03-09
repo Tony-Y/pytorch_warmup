@@ -7,8 +7,12 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torch.optim import Optimizer
-from torch.optim.lr_scheduler import LRScheduler
 from torchvision import datasets, transforms
+
+try:
+    from torch.optim.lr_scheduler import LRScheduler
+except ImportError:
+    from torch.optim.lr_scheduler import _LRScheduler as LRScheduler
 
 import pytorch_warmup as warmup
 from pytorch_warmup import BaseWarmup
