@@ -1,27 +1,28 @@
 import math
 from contextlib import contextmanager
+from collections.abc import Generator
+from typing import Any, Optional, Union
 from torch import Tensor
 from torch.optim import Optimizer
 
 
-def _check_optimizer(optimizer):
+def _check_optimizer(optimizer: Optimizer) -> None:
     if not isinstance(optimizer, Optimizer):
-        raise TypeError('{} ({}) is not an Optimizer.'.format(
-            optimizer, type(optimizer).__name__))
+        raise TypeError("{} ({}) is not an Optimizer.".format(optimizer, type(optimizer).__name__))
 
 
-def _get_lr(group):
-    if isinstance(group['lr'], Tensor):
-        return group['lr'].clone().detach()
+def _get_lr(group: dict) -> Union[float, Tensor]:
+    if isinstance(group["lr"], Tensor):
+        return group["lr"].clone().detach()
     else:
-        return group['lr']
+        return group["lr"]  # type: ignore[no-any-return]
 
 
-def _set_lr(group, lr):
-    if isinstance(group['lr'], Tensor):
-        group['lr'].copy_(lr)
+def _set_lr(group: dict, lr: Union[float, Tensor]) -> None:
+    if isinstance(group["lr"], Tensor):
+        group["lr"].copy_(lr)  # type: ignore[arg-type]
     else:
-        group['lr'] = lr
+        group["lr"] = lr
 
 
 class BaseWarmup:
@@ -38,26 +39,28 @@ class BaseWarmup:
 
     Args:
         optimizer (Optimizer): Wrapped optimizer.
-        warmup_params (list): Warmup parameters.
+        warmup_params (list[dict]): Warmup parameters.
         last_step (int): The index of last step. Default: -1.
     """
 
-    def __init__(self, optimizer, warmup_params, last_step=-1):
+    def __init__(
+        self, optimizer: Optimizer, warmup_params: list[dict], last_step: int = -1
+    ) -> None:
         self.optimizer = optimizer
         self.warmup_params = warmup_params
         self.last_step = last_step
         self.lrs = [_get_lr(group) for group in self.optimizer.param_groups]
         self.dampen()
 
-    def state_dict(self):
+    def state_dict(self) -> dict:
         """Returns the state of the warmup scheduler as a :class:`dict`.
 
         It contains an entry for every variable in :attr:`self.__dict__` which
         is not the optimizer.
         """
-        return {key: value for key, value in self.__dict__.items() if key != 'optimizer'}
+        return {key: value for key, value in self.__dict__.items() if key != "optimizer"}
 
-    def load_state_dict(self, state_dict):
+    def load_state_dict(self, state_dict: dict) -> None:
         """Loads the warmup scheduler's state.
 
         Args:
@@ -66,7 +69,7 @@ class BaseWarmup:
         """
         self.__dict__.update(state_dict)
 
-    def dampen(self, step=None):
+    def dampen(self, step: Optional[int] = None) -> None:
         """Dampens the learning rate.
 
         It is not recommended to explicitly call this method for PyTorch 1.4.0 or later.
@@ -81,10 +84,10 @@ class BaseWarmup:
 
         for group, params in zip(self.optimizer.param_groups, self.warmup_params):
             omega = self.warmup_factor(step, **params)
-            group['lr'] *= omega
+            group["lr"] *= omega
 
     @contextmanager
-    def dampening(self):
+    def dampening(self) -> Generator[None, None, None]:
         """Dampens the learning rate after calling the :meth:`step` method of the learning
         rate scheduler.
 
@@ -117,7 +120,7 @@ class BaseWarmup:
         self.lrs = [_get_lr(group) for group in self.optimizer.param_groups]
         self.dampen()
 
-    def warmup_factor(self, step, **params):
+    def warmup_factor(self, step: int, **params: Any) -> float:
         """Returns the warmup factor :math:`\\omega_{t}` at an iteration :math:`t`.
 
         :meth:`dampen` uses this method to get the warmup factor for each parameter group.
@@ -131,30 +134,34 @@ class BaseWarmup:
         raise NotImplementedError
 
 
-def get_warmup_params(warmup_period, group_count):
+def get_warmup_params(warmup_period: Union[int, list[int]], group_count: int) -> list[dict]:
     if isinstance(warmup_period, list):
         if len(warmup_period) != group_count:
             raise ValueError(
-                'The size of warmup_period ({}) does not match the size of param_groups ({}).'.format(
-                    len(warmup_period), group_count))
+                "The size of warmup_period ({}) does not match the size of param_groups ({}).".format(
+                    len(warmup_period), group_count
+                )
+            )
         for x in warmup_period:
             if not isinstance(x, int):
                 raise TypeError(
-                    'An element in warmup_period, {}, is not an int.'.format(
-                        type(x).__name__))
+                    "An element in warmup_period, {}, is not an int.".format(type(x).__name__)
+                )
             if x <= 0:
                 raise ValueError(
-                    'An element in warmup_period must be a positive integer, but is {}.'.format(x))
+                    "An element in warmup_period must be a positive integer, but is {}.".format(x)
+                )
         warmup_params = [dict(warmup_period=x) for x in warmup_period]
     elif isinstance(warmup_period, int):
         if warmup_period <= 0:
             raise ValueError(
-                'warmup_period must be a positive integer, but is {}.'.format(warmup_period))
-        warmup_params = [dict(warmup_period=warmup_period)
-                         for _ in range(group_count)]
+                "warmup_period must be a positive integer, but is {}.".format(warmup_period)
+            )
+        warmup_params = [dict(warmup_period=warmup_period) for _ in range(group_count)]
     else:
-        raise TypeError('{} ({}) is not a list nor an int.'.format(
-            warmup_period, type(warmup_period).__name__))
+        raise TypeError(
+            "{} ({}) is not a list nor an int.".format(warmup_period, type(warmup_period).__name__)
+        )
     return warmup_params
 
 
@@ -189,20 +196,22 @@ class LinearWarmup(BaseWarmup):
         The warmup schedule must not be initialized before the initialization of the learning rate schedule.
     """
 
-    def __init__(self, optimizer, warmup_period, last_step=-1):
+    def __init__(
+        self, optimizer: Optimizer, warmup_period: Union[int, list[int]], last_step: int = -1
+    ) -> None:
         _check_optimizer(optimizer)
         group_count = len(optimizer.param_groups)
         warmup_params = get_warmup_params(warmup_period, group_count)
         super().__init__(optimizer, warmup_params, last_step)
 
-    def warmup_factor(self, step, warmup_period):
+    def warmup_factor(self, step: int, warmup_period: int) -> float:  # type: ignore[override]
         """Returns the warmup factor :math:`\\omega_{t}^{\\rm linear, \\tau}` at an iteration :math:`t`.
 
         Args:
             step (int): The index of current step.
             warmup_period (int): The warmup period :math:`\\tau`.
         """
-        return min(1.0, (step+1) / warmup_period)
+        return min(1.0, (step + 1) / warmup_period)
 
 
 class ExponentialWarmup(BaseWarmup):
@@ -237,17 +246,19 @@ class ExponentialWarmup(BaseWarmup):
         The warmup schedule must not be initialized before the initialization of the learning rate schedule.
     """
 
-    def __init__(self, optimizer, warmup_period, last_step=-1):
+    def __init__(
+        self, optimizer: Optimizer, warmup_period: Union[int, list[int]], last_step: int = -1
+    ) -> None:
         _check_optimizer(optimizer)
         group_count = len(optimizer.param_groups)
         warmup_params = get_warmup_params(warmup_period, group_count)
         super().__init__(optimizer, warmup_params, last_step)
 
-    def warmup_factor(self, step, warmup_period):
+    def warmup_factor(self, step: int, warmup_period: int) -> float:  # type: ignore[override]
         """Returns the warmup factor :math:`\\omega_{t}^{\\rm expo, \\tau}` at an iteration :math:`t`.
 
         Args:
             step (int): The index of current step.
             warmup_period (int): The constant :math:`\\tau` analogous to a linear warmup period.
         """
-        return 1.0 - math.exp(-(step+1) / warmup_period)
+        return 1.0 - math.exp(-(step + 1) / warmup_period)

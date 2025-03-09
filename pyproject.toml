@@ -46,3 +46,53 @@ packages = ["pytorch_warmup"]
 
 [tool.setuptools.dynamic]
 version = { attr = "pytorch_warmup.__version__" }
+
+
+[tool.setuptools.package-data]
+pytorch_warmup = ["py.typed"]
+
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-s -vv"
+testpaths = ["test"]
+
+
+[dependency-groups]
+dev = [
+    # Examples
+    "torchvision>=0.10",
+    "matplotlib",
+    "pandas",
+    "tqdm",
+    # Test
+    "pytest>=6",
+    # Lint
+    "ruff",
+    # Typing
+    "mypy",
+    "pandas-stubs",
+    "types-tqdm",
+]
+docs = [
+    "sphinx",
+    "sphinxcontrib-katex",
+    "sphinx-copybutton",
+    "sphinx-multiversion",
+    "sphinx-rtd-theme",
+]
+
+
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cpu" },
+]
+torchvision = [
+    { index = "pytorch-cpu" },
+]
+
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true

@@ -1,3 +1,4 @@
+from torch.optim import Optimizer
 from .base import LinearWarmup, ExponentialWarmup, _check_optimizer
 
 
@@ -60,12 +61,13 @@ class UntunedLinearWarmup(LinearWarmup):
         The warmup schedule must not be initialized before the initialization of the learning rate schedule.
     """
 
-    def __init__(self, optimizer, last_step=-1):
+    def __init__(self, optimizer: Optimizer, last_step: int = -1) -> None:
         _check_optimizer(optimizer)
 
-        def warmup_period_fn(beta2):
-            return int(2.0 / (1.0-beta2))
-        warmup_period = [warmup_period_fn(x['betas'][1]) for x in optimizer.param_groups]
+        def warmup_period_fn(beta2: float) -> int:
+            return int(2.0 / (1.0 - beta2))
+
+        warmup_period = [warmup_period_fn(x["betas"][1]) for x in optimizer.param_groups]
         super().__init__(optimizer, warmup_period, last_step)
 
 
@@ -137,10 +139,11 @@ class UntunedExponentialWarmup(ExponentialWarmup):
         The warmup schedule must not be initialized before the initialization of the learning rate schedule.
     """
 
-    def __init__(self, optimizer, last_step=-1):
+    def __init__(self, optimizer: Optimizer, last_step: int = -1) -> None:
         _check_optimizer(optimizer)
 
-        def warmup_period_fn(beta2):
-            return int(1.0 / (1.0-beta2))
-        warmup_period = [warmup_period_fn(x['betas'][1]) for x in optimizer.param_groups]
+        def warmup_period_fn(beta2: float) -> int:
+            return int(1.0 / (1.0 - beta2))
+
+        warmup_period = [warmup_period_fn(x["betas"][1]) for x in optimizer.param_groups]
         super().__init__(optimizer, warmup_period, last_step)

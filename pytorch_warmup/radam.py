@@ -1,8 +1,9 @@
 import math
+from torch.optim import Optimizer
 from .base import BaseWarmup, _check_optimizer
 
 
-def rho_inf_fn(beta2):
+def rho_inf_fn(beta2: float) -> float:
     """Returns the constant of the RAdam algorithm, :math:`\\rho_{\\infty}`.
 
     Args:
@@ -11,7 +12,7 @@ def rho_inf_fn(beta2):
     return 2.0 / (1 - beta2) - 1
 
 
-def rho_fn(t, beta2, rho_inf):
+def rho_fn(t: int, beta2: float, rho_inf: float) -> float:
     """Returns the value of the function of the RAdam algorithm, :math:`\\rho_{t}`,
     at an iteration :math:`t`.
 
@@ -20,12 +21,12 @@ def rho_fn(t, beta2, rho_inf):
         beta2 (float): The second discount factor of Adam, :math:`\\beta_{2}`.
         rho_inf (float): The constant of the RAdam algorithm, :math:`\\rho_{\\infty}`.
     """
-    b2t = beta2 ** t
+    b2t = beta2**t
     rho_t = rho_inf - 2 * t * b2t / (1 - b2t)
     return rho_t
 
 
-def get_offset(beta2, rho_inf):
+def get_offset(beta2: float, rho_inf: float) -> int:
     """Returns the minimal offset :math:`\\delta`.
 
     Args:
@@ -33,7 +34,7 @@ def get_offset(beta2, rho_inf):
         rho_inf (float): The constant of the RAdam algorithm, :math:`\\rho_{\\infty}`.
     """
     if not beta2 > 0.6:
-        raise ValueError('beta2 ({}) must be greater than 0.6'.format(beta2))
+        raise ValueError("beta2 ({}) must be greater than 0.6".format(beta2))
     offset = 1
     while True:
         if rho_fn(offset, beta2, rho_inf) > 4:
@@ -121,20 +122,20 @@ class RAdamWarmup(BaseWarmup):
         The warmup schedule must not be initialized before the initialization of the learning rate schedule.
     """
 
-    def __init__(self, optimizer, last_step=-1):
+    def __init__(self, optimizer: Optimizer, last_step: int = -1) -> None:
         _check_optimizer(optimizer)
         warmup_params = [
             dict(
-                beta2=x['betas'][1],
-                rho_inf=rho_inf_fn(x['betas'][1]),
+                beta2=x["betas"][1],
+                rho_inf=rho_inf_fn(x["betas"][1]),
             )
             for x in optimizer.param_groups
         ]
         for x in warmup_params:
-            x['offset'] = get_offset(**x)
+            x["offset"] = get_offset(**x)
         super().__init__(optimizer, warmup_params, last_step)
 
-    def warmup_factor(self, step, beta2, rho_inf, offset):
+    def warmup_factor(self, step: int, beta2: float, rho_inf: float, offset: int) -> float:  # type: ignore[override]
         """Returns the warmup factor :math:`\\omega_{t+\\delta-1}^{\\rm RAdam}` at an iteration :math:`t`.
 
         Args:
@@ -143,7 +144,7 @@ class RAdamWarmup(BaseWarmup):
             rho_inf (float): The constant of the RAdam algorithm, :math:`\\rho_{\\infty}`.
             offset (int): The minimal offset :math:`\\delta`.
         """
-        rho = rho_fn(step+offset, beta2, rho_inf)
+        rho = rho_fn(step + offset, beta2, rho_inf)
         numerator = (rho - 4) * (rho - 2) * rho_inf
         denominator = (rho_inf - 4) * (rho_inf - 2) * rho
-        return math.sqrt(numerator/denominator)
+        return math.sqrt(numerator / denominator)

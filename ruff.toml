@@ -1,0 +1,77 @@
+exclude = [
+    # Exclude a variety of commonly ignored directories.
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    # Exclude some files and directories specific to this package.
+    "examples/*/__init__.py",
+    "examples/cifar10/resnet.py",
+    "docs",
+]
+
+line-length = 99
+indent-width = 4
+
+# Assume Python 3.9
+target-version = "py39"
+
+[lint]
+select = [
+    "E",       # pycodestyle (error)
+    "F",       # pyflakes
+    "W",       # pycodestyle (warning)
+    "B",       # flake8-bugbear
+    "N",       # pep8-naming
+    "PIE",     # flake8-pie
+    "PLE",     # pylint error
+    "RUF100",  # Unused noqa comments
+    "PGH004",  # blanket noqa comments
+    "UP",      # pyupgrade
+    "C4",      # flake8-comprehensions
+    "SIM101",  # merge duplicate isinstance calls
+    "SIM201", "SIM202", "SIM222", "SIM223",  # flake8-simplify
+    "ISC001",  # implicitly concatenated string
+    "RET501", "RET502",  # better return None handling
+]
+ignore = [
+    "B007",  # Loop control variable not used within the loop body.
+    "N812",  # Lowercase `functional` imported as non-lowercase `F`
+    "UP032", # 'f-string always preferable to format' is controversial
+    "C408",  # Unnecessary `dict()` call (rewrite as a literal)
+]
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+[lint.pycodestyle]
+max-line-length = 127
+
+[format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = false
