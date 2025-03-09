@@ -5,10 +5,13 @@ from typing import Callable, TypeVar, Union
 import torch
 from torch import Tensor
 from torch.optim import Optimizer
-from torch.optim.lr_scheduler import LRScheduler
 import pytorch_warmup as warmup
 from pytorch_warmup import BaseWarmup
 
+try:
+    from torch.optim.lr_scheduler import LRScheduler
+except ImportError:
+    from torch.optim.lr_scheduler import _LRScheduler as LRScheduler
 
 # Type alias
 WarmupClass = Union[type[warmup.LinearWarmup], type[warmup.ExponentialWarmup]]
