@@ -1,5 +1,5 @@
 import argparse
-from typing import Optional, TextIO, Union
+from typing import Optional, TextIO, TypedDict
 import torch
 from torch import Tensor
 from torch.utils.data import DataLoader
@@ -24,7 +24,13 @@ import time
 # Type alias
 Model = torch.nn.Module
 Device = torch.device
-DataLoaderKwargs = dict[str, Union[int, str, bool]]
+
+
+class DataLoaderKwargs(TypedDict, total=False):
+    num_workers: int
+    pin_memory: bool
+    multiprocessing_context: str
+    persistent_workers: bool
 
 
 class Config(argparse.Namespace):
@@ -237,7 +243,7 @@ def main(args: Optional[list[str]] = None) -> None:
         batch_size=config.batch_size,
         shuffle=True,
         drop_last=True,
-        **kwargs,  # type: ignore[arg-type]
+        **kwargs,
     )
     test_loader = torch.utils.data.DataLoader(
         datasets.EMNIST(
@@ -253,7 +259,7 @@ def main(args: Optional[list[str]] = None) -> None:
         ),
         batch_size=config.test_batch_size,
         shuffle=False,
-        **kwargs,  # type: ignore[arg-type]
+        **kwargs,
     )
 
     output_dir = f"output_{config.warmup}"

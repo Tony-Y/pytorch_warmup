@@ -2,7 +2,7 @@ import sys
 import os
 import time
 import argparse
-from typing import Optional, TextIO, Union
+from typing import Optional, TextIO, TypedDict, Union
 import torch
 from torch import Tensor
 from torch.utils.data import DataLoader
@@ -37,8 +37,26 @@ warmup_names = ["linear", "exponential", "radam", "none"]
 # Type alias
 Model = torch.nn.Module
 Device = torch.device
-DataLoaderKwargs = dict[str, Union[int, str, bool]]
-OptimKwargs = dict[str, Union[float, bool, tuple[float, float], Tensor]]
+
+
+class DataLoaderKwargs(TypedDict, total=False):
+    num_workers: int
+    pin_memory: bool
+    multiprocessing_context: str
+    persistent_workers: bool
+
+
+class OptimKwargs(TypedDict):
+    lr: Union[float, Tensor]
+    weight_decay: float
+
+
+class SGDKwargs(OptimKwargs):
+    momentum: float
+
+
+class AdamKwargs(OptimKwargs):
+    betas: tuple[float, float]
 
 
 class Config(argparse.Namespace):
@@ -205,24 +223,24 @@ def dataloader_options(device: Device, workers: int) -> DataLoaderKwargs:
 def optimization_algorithm(config: Config, model: Model, device: Device) -> Optimizer:
     name = config.algorithm
     lr = torch.tensor(config.lr).to(device) if config.compile else config.lr
-    kwargs: OptimKwargs = dict(lr=lr, weight_decay=config.weight_decay)
+    kwargs = OptimKwargs(lr=lr, weight_decay=config.weight_decay)
     if name == "sgd":
-        kwargs["momentum"] = 0.9
+        kwargs = SGDKwargs(**kwargs, momentum=0.9)
     else:
-        kwargs["betas"] = (0.9, config.beta2)
+        kwargs = AdamKwargs(**kwargs, betas=(0.9, config.beta2))
 
     if name == "sgd":
-        return optim.SGD(model.parameters(), **kwargs)  # type: ignore[arg-type]
+        return optim.SGD(model.parameters(), **kwargs)
     elif name == "adamw":
-        return optim.AdamW(model.parameters(), **kwargs)  # type: ignore[arg-type]
+        return optim.AdamW(model.parameters(), **kwargs)
     elif name == "amsgradw":
-        return optim.AdamW(model.parameters(), amsgrad=True, **kwargs)  # type: ignore[arg-type]
+        return optim.AdamW(model.parameters(), amsgrad=True, **kwargs)
     elif name == "nadamw":
-        return optim.NAdam(model.parameters(), decoupled_weight_decay=True, **kwargs)  # type: ignore[arg-type]
+        return optim.NAdam(model.parameters(), decoupled_weight_decay=True, **kwargs)
     elif name == "adamax":
-        return optim.Adamax(model.parameters(), **kwargs)  # type: ignore[arg-type]
+        return optim.Adamax(model.parameters(), **kwargs)
     elif name == "radamw":
-        return optim.RAdam(model.parameters(), decoupled_weight_decay=True, **kwargs)  # type: ignore[arg-type]
+        return optim.RAdam(model.parameters(), decoupled_weight_decay=True, **kwargs)
     else:
         raise ValueError(f"unknown optimization algorithm: {name}")
 
@@ -342,7 +360,7 @@ def main(args: Optional[list[str]] = None) -> None:
         batch_size=config.batch_size,
         shuffle=True,
         drop_last=True,
-        **kwargs,  # type: ignore[arg-type]
+        **kwargs,
     )
     test_loader = torch.utils.data.DataLoader(
         datasets.CIFAR10(
@@ -357,7 +375,7 @@ def main(args: Optional[list[str]] = None) -> None:
         ),
         batch_size=config.test_batch_size,
         shuffle=False,
-        **kwargs,  # type: ignore[arg-type]
+        **kwargs,
     )
 
     output_dir = config.output
