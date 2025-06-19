@@ -19,11 +19,8 @@ jobs:
             python-version: 3.11
           - pytorch-version: 2.2.2
             python-version: 3.12
-          - pytorch-version: 2.5.1
-            python-version: 3.13
           - pytorch-version: 2.6.0
             python-version: 3.13
-            os: macos-latest
           - pytorch-option: '+cpu'
           - pytorch-option: ''
             os: macos-latest

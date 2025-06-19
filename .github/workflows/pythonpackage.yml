@@ -24,13 +24,9 @@ jobs:
           - pytorch-version: 2.2.2
             python-version: 3.12
             pytorch-release: earliest
-          - pytorch-version: 2.5.1
-            python-version: 3.13
-            pytorch-release: earliest
           - pytorch-version: 2.6.0
             python-version: 3.13
             pytorch-release: earliest
-            os: macos-latest
           - pytorch-version: 2.7.1
             pytorch-release: latest
           - pytorch-option: '+cpu'
