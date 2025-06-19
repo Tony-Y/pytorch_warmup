@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.abspath('../'))
 # -- Project information -----------------------------------------------------
 
 project = 'PyTorch Warmup'
-copyright = '2019-2024, Takenori Yamamoto'
+copyright = '2019-2025, Takenori Yamamoto'
 author = 'Takenori Yamamoto'
 
 

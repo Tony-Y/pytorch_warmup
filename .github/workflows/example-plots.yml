@@ -8,7 +8,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: [3.9, '3.10', 3.11, 3.12]
+        python-version: [3.9, '3.10', 3.11, 3.12, 3.13]
         os: [macos-latest, windows-latest, ubuntu-latest]
         include:
           - pytorch-version: 1.9.1
@@ -19,6 +19,8 @@ jobs:
             python-version: 3.11
           - pytorch-version: 2.2.2
             python-version: 3.12
+          - pytorch-version: 2.5.1
+            python-version: 3.13
           - pytorch-option: '+cpu'
           - pytorch-option: ''
             os: macos-latest

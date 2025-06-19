@@ -15,8 +15,8 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cpu
-          pip install torchvision==0.20.1 --index-url https://download.pytorch.org/whl/cpu
+          pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          pip install torchvision==0.22.1 --index-url https://download.pytorch.org/whl/cpu
           pip install matplotlib pandas tqdm
           pip install ruff
           pip install mypy pandas-stubs types-tqdm
